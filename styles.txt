@@ -1,0 +1,21 @@
+Buttons:
+
+Primary Button: bg-green-600 text-white font-bold py-2 px-4 rounded
+Secondary Button: bg-blue-500 text-white font-bold py-2 px-4 rounded
+Forms:
+
+Input Fields: shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline
+Labels: block text-gray-700 text-sm font-bold mb-2
+Navigation Bar:
+
+Background: bg-white border-b-2 border-gray-100
+Menu Items: text-gray-800 hover:text-green-600
+Cards for Listings:
+
+Card: bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4
+Title: font-bold text-xl mb-2
+Description: text-gray-700 text-base
+Alerts and Notifications:
+
+Success: bg-green-100 border-l-4 border-green-500 text-green-700 p-4
+Error: bg-red-100 border-l-4 border-red-500 text-red-700 p-4
