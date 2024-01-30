@@ -15,7 +15,7 @@
 </head>
 <body class="antialiased">
 
-<div class="h-screen dark:bg-gray-800 bg-white">
+<div class="h-full dark:bg-gray-800 bg-white">
 
     <nav class="relative px-4 py-4 flex justify-between items-center bg-white border-b-2 border-gray-100">
         <a class="text-3xl font-bold leading-none" href="/">

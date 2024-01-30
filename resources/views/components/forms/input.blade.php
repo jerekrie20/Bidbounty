@@ -1,4 +1,4 @@
-@props(['name','data','input'])
+@props(['name','data','input', 'placeholder'])
 
 <div class="mr-2 w-full">
 <label
@@ -15,6 +15,7 @@
     type="{{isset($input) ? $input : 'text'}}"
     name="{{$name}}"
     id="input"
+    placeholder="{{isset($placeholder) ? $placeholder : ''}}"
     value="{{ $data ?? old($name) }}"
 >
 

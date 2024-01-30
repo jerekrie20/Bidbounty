@@ -21,8 +21,10 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [UserController::class, 'index'])->name('dashboard');
-
     Route::get('account',[UserController::class, 'account'])->name('account');
+//    Route::put('user/{user}/account',[UserController::class, 'updateAccount'])->name('user.account');
+
+
 
     Route::get('categories', function () {
         return view('categories');

@@ -19,9 +19,9 @@
         </div>
     </section>
 
-    <div class="flex justify-center content-center shadow-md shadow-white/50 w-3/4 xl:w-1/2 m-auto mt-40 pb-10">
+    <div class="flex justify-center content-center w-3/4 xl:w-1/2 m-auto mt-20 ">
 
-        <form action="/login" method="post" class="w-full" >
+        <form action="/login" method="post" class="w-full mb-20 pb-10 shadow-md shadow-white/50" >
             @csrf
 
             <div class="mt-10 text-center ">

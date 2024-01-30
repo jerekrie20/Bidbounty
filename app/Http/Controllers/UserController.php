@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
     {
         //Check if user has been approved, show error view with a note to wait for approval
 
-        if(auth()->user()->approved == false){
+        if (auth()->user()->approved == false) {
             Auth::logout();
             return view('auth.wait');
         }
@@ -30,7 +31,7 @@ class UserController extends Controller
         $states = State::all();
         $countries = Country::all();
 
-        $defaultAvatars = ['cow.png','pig.png','sheep.png','tools.png'];
+        $defaultAvatars = ['cow.png', 'pig.png', 'sheep.png', 'tools.png'];
         return view('user.account', [
             'user' => auth()->user(),
             'states' => $states,
@@ -75,9 +76,31 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function updateAccount(User $user)
     {
-        //
+
+
+        //Get data and validate
+        $data = request()->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', Rule::unique('users')->ignore($user->id), 'string', 'email', 'max:255'],
+            'phone' => ['required', 'regex:/^\d{3}-\d{3}-\d{4}$/'],
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state_id' => 'required|integer',
+            'country_id' => 'required|integer',
+            'zip' => ['required', 'string', 'digits:5'],
+        ]);
+
+
+        //Update user
+
+        $user->update($data);
+
+        //Redirect to account page with success message
+        return redirect()->route('account')->with('success', 'Account updated successfully');
+
+
     }
 
     /**

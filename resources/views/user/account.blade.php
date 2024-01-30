@@ -1,39 +1,6 @@
 <x-layouts.user>
 
-    <x-forms.form title="Update Account" method="POST" action="/user/account">
-        <div class="mb-4 flex justify-center">
-
-            <x-forms.input name="name" input="text" :data="isset($user) ? $user->name : ''"/>
-
-            <x-forms.input name="email" input="text" :data="isset($user) ? $user->email : ''"/>
-
-            <x-forms.input name="phone" input="tel" :data="isset($user) ? $user->phone : ''"/>
-        </div>
-
-        <div class="mb-4 flex justify-center">
-                <x-forms.input name="address" input="text" :data="isset($user) ? $user->address : ''"/>
-
-                <x-forms.input name="city" input="text" :data="isset($user) ? $user->city : ''"/>
-        </div>
-
-        <div class="mb-4 flex justify-center">
-            <x-forms.select name="state" :data="$states" itemID="state_id"/>
-            <x-forms.select name="country" :data="$countries" itemID="country_id"/>
-            <x-forms.input name="zip" input="text" :data="isset($user) ? $user->zip : ''"/>
-        </div>
-
-
-
-        <div class="flex justify-center">
-                <x-forms.submit>Submit</x-forms.submit>
-
-                <x-forms.reset>Reset</x-forms.reset>
-
-
-        </div>
-
-
-    </x-forms.form>
+    @livewire('update-account')
 
     <x-forms.form title="Update Biography" method="POST" action="/user/account/bio">
 
