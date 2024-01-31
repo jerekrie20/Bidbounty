@@ -76,7 +76,7 @@ class UpdateAccount extends Component
             'user' => auth()->user(),
             'states' => $states,
             'countries' => $countries,
-            'defaultAvatars' => $defaultAvatars
+
         ]);
     }
 }
