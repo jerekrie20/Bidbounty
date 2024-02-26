@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lot;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LotController extends Controller
 {
@@ -12,7 +13,13 @@ class LotController extends Controller
      */
     public function index()
     {
-        //
+        //Check to see if user is approved
+        if (auth()->user()->approved == false) {
+            Auth::logout();
+            return view('auth.wait');
+        }
+
+        return view('user.lots');
     }
 
     /**

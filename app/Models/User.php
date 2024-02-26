@@ -61,6 +61,12 @@ class User extends Authenticatable
          return $this->belongsToMany(Role::class);
      }
 
+     // User can have many lots
+        public function lots() : HasMany
+        {
+            return $this->hasMany(Lot::class);
+        }
+
     /**
      * Get the items listed by the user.
      */

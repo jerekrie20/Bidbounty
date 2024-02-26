@@ -73,7 +73,6 @@ class UpdateAccount extends Component
         $defaultAvatars = ['cow.png', 'pig.png', 'sheep.png', 'tools.png'];
 
         return view('livewire.update-account', [
-            'user' => auth()->user(),
             'states' => $states,
             'countries' => $countries,
 
