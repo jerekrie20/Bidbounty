@@ -59,7 +59,7 @@
                           d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
                 </svg>
             </li>
-            <li><a class="text-sm text-white hover:text-white font-bold" href="/lots">Lots</a></li>
+            <li><a class="text-sm text-white hover:text-white font-bold" href="/userLots">Lots</a></li>
             <li class="text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
                      viewBox="0 0 24 24">
@@ -268,11 +268,11 @@
         }
 
 
-        document.getElementById('dropzone-file').addEventListener('change', function (event) {
-            var fileName = event.target.files[0].name;
-            document.getElementById('file-instruction').textContent = "Selected file: ";
-            document.getElementById('file-name').textContent = fileName;
-        });
+        // document.getElementById('dropzone-file').addEventListener('change', function (event) {
+        //     var fileName = event.target.files[0].name;
+        //     document.getElementById('file-instruction').textContent = "Selected file: ";
+        //     document.getElementById('file-name').textContent = fileName;
+        // });
 
     });
 

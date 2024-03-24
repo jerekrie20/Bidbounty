@@ -2,4 +2,7 @@
 
     @livewire('lots')
 
+
+
+
 </x-layouts.user>

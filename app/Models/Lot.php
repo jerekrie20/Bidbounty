@@ -82,22 +82,41 @@ class Lot extends Model
 {
     use HasFactory;
 
+    //Mass assignable attributes
+    protected $fillable = [
+        'title',
+        'description',
+        'image',
+        'status',
+        'start_date',
+        'end_date'
+    ];
+
+    //casts
+    protected function casts(): array
+    {
+        return [
+            'start_date' => 'datetime:Y-m-d H:i:s',
+            'end_date' => 'datetime:Y-m-d H:i:s'
+        ];
+    }
+
     //Start of the relationship
 
     // Lot can have many items
-    public function items() : HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(Item::class, 'lot_id');
     }
 
     // Lot can have many categories
-    public function categories() : belongsToMany
+    public function categories(): belongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
 
     //Lot belongs to a user
-    public function user() : BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

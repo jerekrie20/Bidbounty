@@ -62,7 +62,7 @@ class UpdateBiography extends Component
             $img->scale(width: 300);
 
             // Generate a new filename
-            $filename = $user->name . '_' . rand(1000, 9999) . '.' . $this->image->getClientOriginalExtension();
+            $filename = 'avatar_' . rand(1000, 9999) . '.' . $this->image->getClientOriginalExtension();
 
             // Delete the old image if it exists
 

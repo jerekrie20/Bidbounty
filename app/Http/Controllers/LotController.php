@@ -19,7 +19,7 @@ class LotController extends Controller
             return view('auth.wait');
         }
 
-        return view('user.lots');
+        return view('user.user-lots');
     }
 
     /**

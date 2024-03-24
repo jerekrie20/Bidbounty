@@ -18,6 +18,7 @@
     @else
 
         <select wire:model="{{$name}}" name="{{$name}}" id="{{$name}}" class="bg-gray-100 border-2 w-full p-4 rounded-lg">
+            <option value="">Select {{ ucwords($name) }}</option>
             @foreach($data as $item)
                 <option value="{{$item}}">{{$item}}</option>
             @endforeach
