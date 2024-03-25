@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\Category;
 use App\Models\Lot;
 use App\Services\ImageService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -13,19 +15,21 @@ use Livewire\Attributes\Url;
 
 class Lots extends Component
 {
-    use WithPagination,WithFileUploads;
+    use WithPagination, WithFileUploads;
 
     public $title;
     public $description;
     public $image;
     public $status;
-    public $statusOption = ['upcoming', 'live','pending', 'closed'];
+    public $statusOption = ['upcoming', 'live', 'pending', 'closed'];
     public $start_date;
     public $end_date;
     public $lotId;
 
     public $mode = 'create';
     public $formAction = 'submit';
+
+    public $category=[];
 
     public $sortBy = '';
     public $sortDirection = 'asc';
@@ -40,8 +44,10 @@ class Lots extends Component
             'description' => 'required|string|max:500',
             'image' => 'nullable|image|max:1024',
             'status' => 'required|string|max:255',
-            'start_date' => 'required|date_format:Y-m-d\TH:i',
-            'end_date' => 'required|date_format:Y-m-d\TH:i|after:start_date'
+            'start_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today',
+            'end_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today|after:start_date',
+            'category' => 'required|array',
+            'category.*' => Rule::exists('categories', 'id'),
         ];
     }
 
@@ -64,18 +70,16 @@ class Lots extends Component
     }
 
     //Create a lot
+//Create a lot
     public function create()
     {
         $this->validate();
-
         $imageService = new ImageService();
-
         //Validate the image, store it in the lots folder and create a new lot
-        if($this->image){
+        if ($this->image) {
             $this->image = $imageService->saveImage($this->image, auth()->user(), 'lotImages');
         }
-
-        auth()->user()->lots()->create([
+        $lot = auth()->user()->lots()->create([
             'title' => $this->title,
             'description' => $this->description,
             'image' => $this->image,
@@ -83,9 +87,10 @@ class Lots extends Component
             'start_date' => $this->start_date,
             'end_date' => $this->end_date
         ]);
+        //add category to pivot table
+        $lot->categories()->attach($this->category);
 
         $this->resetFields();
-
         session()->flash('success', 'Created successfully');
     }
 
@@ -99,27 +104,24 @@ class Lots extends Component
         $this->end_date = \Carbon\Carbon::parse($lot->end_date)->format('Y-m-d\TH:i');
         $this->lotId = $lot->id; // update $lotId
 
+        $this->category = $lot->categories->pluck('id')->toArray();
         $this->mode = 'edit'; // Change the mode to edit
 
 //        Log::info('Edit method called with lotId:' . $this->lotId);
     }
 
-    //Update a lot
+//Update a lot
     public function update(): void
     {
         $this->validate();
-
         $lot = Lot::find($this->lotId);
-
         $imageService = new ImageService();
-
         //If image is set, update the image, otherwise keep the old image
-        if($this->image){
+        if ($this->image) {
             $this->image = $imageService->saveImage($this->image, $lot->image, 'lotImages');
-        }else{
+        } else {
             $this->image = $lot->image;
         }
-
         $lot->update([
             'title' => $this->title,
             'description' => $this->description,
@@ -128,11 +130,11 @@ class Lots extends Component
             'start_date' => $this->start_date,
             'end_date' => $this->end_date
         ]);
+        // Sync categories
+        $lot->categories()->sync($this->category);
 
         $this->resetFields();
-
         session()->flash('success', 'Updated successfully!');
-
     }
 
     //Delete a lot
@@ -150,14 +152,15 @@ class Lots extends Component
         $this->start_date = '';
         $this->end_date = '';
         $this->image = '';
+        $this->category = []; //
         $this->lotId = null;
     }
 
     public function submit(): void
     {
-        if($this->mode == 'create'){
+        if ($this->mode == 'create') {
             $this->create();
-        }else{
+        } else {
             $this->update();
         }
     }
@@ -165,9 +168,9 @@ class Lots extends Component
     public function render()
     {
 
+        $categories = Category::all();
         //Get lots that belong to the user
-
-        if($this->sortBy == ''){
+        if ($this->sortBy == '') {
             $this->sortBy = 'id';
         }
         $lots = Lot::query()
@@ -178,8 +181,9 @@ class Lots extends Component
 
 //        dd($lots);
 
-        return view('livewire.lots',[
+        return view('livewire.lots', [
             'lots' => $lots,
+            'categories' => $categories
         ]);
     }
 }

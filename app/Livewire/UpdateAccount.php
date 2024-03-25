@@ -24,7 +24,7 @@ class UpdateAccount extends Component
     public function rules(){
         return [
             'name' => 'required|string|max:255',
-            'email' => ['required', Rule::unique('users')->ignore(auth()->id()), 'string', 'email', 'max:255'],
+            'email' => ['required', Rule::unique('users')->ignore(auth()->id()), 'string', 'email:rfc', 'max:255'],
             'phone' => ['required', 'regex:/^\d{3}-\d{3}-\d{4}$/'],
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',

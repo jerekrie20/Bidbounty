@@ -8,6 +8,7 @@
     <br>
     @if(!empty($itemID))
         <select wire:model="{{$itemID}}" name="{{$itemID}}" id="{{$itemID}}" class="bg-gray-100 border-2 w-full p-4 rounded-lg">
+            <option value="">Select {{ ucwords($name) }}</option>
             @foreach($data as $item)
                 <option value="{{$item->id}}">{{$item->name}}</option>
             @endforeach

@@ -8,9 +8,15 @@
 
                 <x-livewire.forms.input name="title" input="text"/>
                 <x-livewire.forms.select name="status" :data="$statusOption"/>
+            </div>
+
+            <div class="mb-4 flex justify-center">
                 <x-livewire.forms.input name="start_date" input="datetime-local"/>
                 <x-livewire.forms.input name="end_date" input="datetime-local"/>
+            </div>
 
+            <div class="mb-4">
+                <x-livewire.forms.checkbox model="category" :data="$categories" name="categories" :categoryList="$category"/>
             </div>
 
             <div>
@@ -66,7 +72,7 @@
             <input type="text" id="search" wire:model.live.debounce.500ms="search">
         </div>
 
-        <table class="lg:w-full xl:w-2/3 m-auto divide-y divide-gray-200 table-auto mb-32">
+        <table class="xl:w-2/3 lg:w-full m-auto divide-y divide-gray-200 table-auto">
             <thead>
             <tr>
                 <th class="px-6 py-3 bg-gray-50">Image</th>
@@ -88,24 +94,92 @@
                         d="M177 159.7L313 295.7c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 247.2 96.4 343.6c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l136-136 .4-.2c9.4-9.4 24.6-9.2 34-.2z"/>
                 </svg>
                             @endif
-        </span>
+                </span>
                     @endif
                 </th>
 
                 <th id="description-column" wire:click.prevent="sortField('description')"
-                    class="px-6 py-3 bg-gray-50 text-left cursor-pointer">
+                    class="px-6 py-3 bg-gray-50 text-left cursor-pointer text-blue-600">
                     Description
+                    @if ($sortBy === 'description')
+                        <span>
+                    @if ($sortDirection === 'asc')
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                        <path
+                            d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0L160 264.8l96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L177 352.3c-9.2 9.4-24.4 9.4-34 .2z"/>
+                    </svg>
+                            @else
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                    <path
+                        d="M177 159.7L313 295.7c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 247.2 96.4 343.6c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l136-136 .4-.2c9.4-9.4 24.6-9.2 34-.2z"/>
+                </svg>
+                            @endif
+        </span>
+                    @endif
                 </th>
-                <th wire:click.prevent="sortField('start_date')" class="px-6 py-3 bg-gray-50 text-left cursor-pointer">
+                <th wire:click.prevent="sortField('start_date')" class="px-6 py-3 bg-gray-50 text-left cursor-pointer text-blue-600">
                     Start Date
+                    @if ($sortBy === 'start_date')
+                        <span>
+                    @if ($sortDirection === 'asc')
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                        <path
+                            d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0L160 264.8l96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L177 352.3c-9.2 9.4-24.4 9.4-34 .2z"/>
+                    </svg>
+                            @else
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                    <path
+                        d="M177 159.7L313 295.7c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 247.2 96.4 343.6c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l136-136 .4-.2c9.4-9.4 24.6-9.2 34-.2z"/>
+                </svg>
+                            @endif
+        </span>
+                    @endif
                 </th>
-                <th wire:click.prevent="sortField('end_date')" class="px-6 py-3 bg-gray-50 text-left cursor-pointer">
+                <th wire:click.prevent="sortField('end_date')" class="px-6 py-3 bg-gray-50 text-left cursor-pointer text-blue-600">
                     End Date
+                    @if ($sortBy === 'end_date')
+                        <span>
+                    @if ($sortDirection === 'asc')
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                        <path
+                            d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0L160 264.8l96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L177 352.3c-9.2 9.4-24.4 9.4-34 .2z"/>
+                    </svg>
+                            @else
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                    <path
+                        d="M177 159.7L313 295.7c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 247.2 96.4 343.6c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l136-136 .4-.2c9.4-9.4 24.6-9.2 34-.2z"/>
+                </svg>
+                            @endif
+        </span>
+                    @endif
                 </th>
-                <th wire:click.prevent="sortField('status')" class="px-6 py-3 bg-gray-50 text-left cursor-pointer">
+                <th wire:click.prevent="sortField('status')" class="px-6 py-3 bg-gray-50 text-left cursor-pointer text-blue-600">
                     Status
+                    @if ($sortBy === 'status')
+                        <span>
+                    @if ($sortDirection === 'asc')
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                        <path
+                            d="M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0L160 264.8l96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L177 352.3c-9.2 9.4-24.4 9.4-34 .2z"/>
+                    </svg>
+                            @else
+                                <svg class="w-4 h-4 inline-block" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 320 512">
+                    <path
+                        d="M177 159.7L313 295.7c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 247.2 96.4 343.6c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l136-136 .4-.2c9.4-9.4 24.6-9.2 34-.2z"/>
+                </svg>
+                            @endif
+        </span>
+                    @endif
                 </th>
-                {{-- ... other table headings (description, start_date, etc.) --}}
+{{--                <th class="px-6 py-3 bg-gray-50">Categories</th>--}}
                 <th class="px-6 py-3 bg-gray-50">Actions</th>
             </tr>
             </thead>
@@ -129,6 +203,13 @@
                     {{ $lot->status }}
                 </span>
                     </td>
+{{--                    <td class="px-6 py-4">--}}
+{{--                        @foreach($lot->categories as $category)--}}
+{{--                            <span class="text-md">--}}
+{{--                                {{ $category->name }}--}}
+{{--                            </span>--}}
+{{--                        @endforeach--}}
+{{--                    </td>--}}
                     <td class="flex px-6 py-4">
                         <button wire:click="edit({{ $lot->id }})"
                                 class="bg-blue-500 text-white active:bg-blue-600 font-bold uppercase text-sm px-3 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ease-linear transition-all duration-150">
@@ -136,7 +217,8 @@
                         </button>
                         <button wire:click="delete({{ $lot->id }})"
                                 class="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-3 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
-                                wire:confirm.prompt="Are you sure? This will delete ALL listings under this lot\n\nType YES to confirm|YES">Delete
+                                wire:confirm.prompt="Are you sure? This will delete ALL listings under this lot\n\nType YES to confirm|YES">
+                            Delete
                         </button>
                     </td>
                 </tr>
@@ -144,7 +226,7 @@
             </tbody>
         </table>
 
-        <div class="mt-4">
+        <div class="mt-4 mb-32 flex justify-center">
             {{ $lots->links() }}
         </div>
     </div>

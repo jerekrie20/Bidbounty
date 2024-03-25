@@ -53,12 +53,16 @@ class ImageService
 
             // Delete the old image if it exists
 
-            //Check if the user has an image
-            if (file_exists(storage_path('app/'.$folder.'/' . $current))) {
-                //Delete the file
+            //Check if the current image is not empty
+            if (!empty($current)) {
+                //Check if the file exists
+                if (file_exists(storage_path('app/'.$folder.'/' . $current))) {
+                    //Delete the file
 
-                unlink(storage_path('app/'.$folder.'/' . $current));
+                    unlink(storage_path('app/'.$folder.'/' . $current));
+                }
             }
+
             // Save the image to the main folder/year/month/day directory
 
             $img->save(storage_path('app/'.$folder.'/'. $filename));
