@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Jobs\EndLotAuction;
+use App\Jobs\UpdateLotStatus;
 use App\Models\Category;
 use App\Models\Lot;
 use App\Services\ImageService;
@@ -39,16 +41,29 @@ class Lots extends Component
     //Validation rules
     public function rules()
     {
-        return [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|max:500',
-            'image' => 'nullable|image|max:1024',
-            'status' => 'required|string|max:255',
-            'start_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today',
-            'end_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today|after:start_date',
-            'category' => 'required|array',
-            'category.*' => Rule::exists('categories', 'id'),
-        ];
+
+        if ($this->mode == 'create') {
+            return [
+                'title' => 'required|string|max:255',
+                'description' => 'required|string|max:500',
+                'image' => 'nullable|image|max:1024',
+                'category' => 'required|array',
+                'category.*' => Rule::exists('categories', 'id'),
+                'start_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today',
+                'end_date' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today|after:start_date',
+            ];
+        } else {
+            return [
+                'title' => 'required|string|max:255',
+                'description' => 'required|string|max:500',
+                'image' => 'nullable|image|max:1024',
+                'category' => 'required|array',
+                'category.*' => Rule::exists('categories', 'id'),
+                'start_date' => 'required|date_format:Y-m-d\TH:i',
+                'end_date' => 'required|date_format:Y-m-d\TH:i|after:start_date',
+            ];
+        }
+
     }
 
     public function sortField($field)
@@ -133,6 +148,31 @@ class Lots extends Component
         // Sync categories
         $lot->categories()->sync($this->category);
 
+        //Add Job to update the status of the lot
+        $auctionStartDateTime = $lot->start_date;
+        $auctionEndDateTime = $lot->end_date;
+//        Log::info("Start delay: " . $auctionStartDateTime->diffInSeconds(now()));
+//        Log::info("End delay: " . $auctionEndDateTime->diffInSeconds(now()));
+
+        $startDelay = $auctionStartDateTime->diffInSeconds(now());
+        $endDelay = $auctionEndDateTime->diffInSeconds(now());
+
+        // if the start time is in the past or less than 5 minutes from now
+        if ($startDelay < 5 * 60) {
+            // handle this case, either dispatch immediately, log an error, etc.
+            UpdateLotStatus::dispatch($lot);
+        } else {
+            UpdateLotStatus::dispatch($lot)->delay($startDelay);
+        }
+
+// if the end time is in the past or less than 5 minutes from now
+        if ($endDelay < 5 * 60) {
+            // handle this case, either dispatch immediately, log an error, etc.
+            EndLotAuction::dispatch($lot);
+        } else {
+            EndLotAuction::dispatch($lot)->delay($endDelay);
+        }
+
         $this->resetFields();
         session()->flash('success', 'Updated successfully!');
     }
@@ -169,12 +209,14 @@ class Lots extends Component
     {
 
         $categories = Category::all();
+
         //Get lots that belong to the user
         if ($this->sortBy == '') {
             $this->sortBy = 'id';
         }
         $lots = Lot::query()
             ->where('title', 'like', '%' . $this->search . '%')
+            ->orwhere('description', 'like', '%' . $this->search . '%' )
             ->where('user_id', auth()->id())
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate(10);
