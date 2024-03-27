@@ -51,7 +51,7 @@
             </button>
         </div>
         <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:items-center lg:w-auto lg:space-x-6">
-            <li><a class="text-sm text-white hover:text-white font-bold" href="/">Listings</a></li>
+            <li><a class="text-sm text-white hover:text-white font-bold" href="/listings">Listings</a></li>
             <li class="text-gray-300">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
                      viewBox="0 0 24 24">

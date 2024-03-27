@@ -1,5 +1,5 @@
 <x-layouts.user>
 
-    @livewire('lots')
+    @livewire('listings')
 
 </x-layouts.user>

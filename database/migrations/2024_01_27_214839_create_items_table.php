@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lot_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->nullable()->constrained()->onDelete('set null');
             $table->string('title');
             $table->text('description')->nullable()->default(null);
             $table->decimal('starting_bid', 10, 2);
@@ -24,7 +23,7 @@ return new class extends Migration
             $table->dateTime('start_time')->index('items_start_idx');
             $table->dateTime('end_time')->index('items_end_idx');
             $table->enum('status', ['available', 'pending', 'sold'])->index('items_status_idx')->default('available');
-            $table->string('image')->nullable()->default(null);
+            $table->json('images')->nullable()->default(null);
             $table->timestamps();
         });
     }

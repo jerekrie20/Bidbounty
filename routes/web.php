@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LotController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -24,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', [UserController::class, 'index'])->name('dashboard');
     Route::get('account',[UserController::class, 'account'])->name('account');
     Route::get('/userLots',[LotController::class, 'index'])->name('lots');
+    Route::get('/listings',[ItemController::class, 'index'])->name('listings');
 //    Route::put('user/{user}/account',[UserController::class, 'updateAccount'])->name('user.account');
 
 

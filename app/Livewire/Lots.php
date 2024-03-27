@@ -35,6 +35,7 @@ class Lots extends Component
 
     public $sortBy = '';
     public $sortDirection = 'asc';
+    public $perPage = 10;
     #[Url]
     public $search = '';
 
@@ -158,15 +159,15 @@ class Lots extends Component
         $endDelay = $auctionEndDateTime->diffInSeconds(now());
 
         // if the start time is in the past or less than 5 minutes from now
-        if ($startDelay < 5 * 60) {
+        if ($auctionStartDateTime < now() || $startDelay < 5 * 60){
             // handle this case, either dispatch immediately, log an error, etc.
             UpdateLotStatus::dispatch($lot);
         } else {
             UpdateLotStatus::dispatch($lot)->delay($startDelay);
         }
 
-// if the end time is in the past or less than 5 minutes from now
-        if ($endDelay < 5 * 60) {
+        // if the end time is in the past or less than 5 minutes from now
+        if ($auctionEndDateTime < now() || $startDelay < 5 * 60) {
             // handle this case, either dispatch immediately, log an error, etc.
             EndLotAuction::dispatch($lot);
         } else {
@@ -219,7 +220,7 @@ class Lots extends Component
             ->orwhere('description', 'like', '%' . $this->search . '%' )
             ->where('user_id', auth()->id())
             ->orderBy($this->sortBy, $this->sortDirection)
-            ->paginate(10);
+            ->paginate($this->perPage);
 
 //        dd($lots);
 

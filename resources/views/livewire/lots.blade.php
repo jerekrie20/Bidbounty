@@ -67,10 +67,26 @@
     </script>
 
     <div class="w-full pl-2 pr-2 m-auto overflow-x-auto mt-6"> {{-- For horizontal scrolling --}}
-        <div class="flex justify-center items-center mb-4">
-            <label for="search" class="text-white mr-4">Search:</label>
-            <input type="text" id="search" wire:model.live.debounce.500ms="search">
+        <div class="flex justify-evenly items-center mb-4">
+            <div>
+                <label for="search" class="text-white mr-4">Search:</label>
+                <input type="text" id="search" wire:model.live.debounce.500ms="search">
+            </div>
+            <div>
+                <label for="perPage" class="text-white mr-4">Per Page:</label>
+                <select id="perPage" wire:model.live="perPage" class="bg-gray-800 text-white">
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                </select>
+            </div>
+            <div class="mt-4 mr-4 flex justify-center">
+                {{ $lots->links() }}
+            </div>
         </div>
+
+
 
         <table class="xl:w-2/3 lg:w-full m-auto divide-y divide-gray-200 table-auto">
             <thead>
