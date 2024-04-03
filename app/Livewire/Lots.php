@@ -123,6 +123,8 @@ class Lots extends Component
         $this->category = $lot->categories->pluck('id')->toArray();
         $this->mode = 'edit'; // Change the mode to edit
 
+        $this->dispatch('scrollToTop');
+
 //        Log::info('Edit method called with lotId:' . $this->lotId);
     }
 

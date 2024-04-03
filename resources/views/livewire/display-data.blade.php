@@ -51,10 +51,14 @@
                         <td class="px-6 py-4">{{ $item[$column['field']] }}</td>
                     @endforeach
                     <td class="flex px-6 py-4">
-                        <button wire:click="edit({{ $item['id'] }})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <button wire:click="edit({{ $item['id'] }})"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Edit
                         </button>
-                        <button wire:click="delete({{ $item['id'] }})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        <button
+                            wire:click="remove({{ $item['id'] }})"
+                            wire:confirm="Are you sure you want to delete this item?"
+                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                             Delete
                         </button>
                     </td>
@@ -69,5 +73,15 @@
         {{ $data->links() }}
         </div>
     </div>
+
+    @script
+    <script>
+        Livewire.on('scrollToTop', function() {
+            window.scrollTo({ top: 20, behavior: 'smooth' })
+        });
+    </script>
+
+    @endscript
+
 
 </div>

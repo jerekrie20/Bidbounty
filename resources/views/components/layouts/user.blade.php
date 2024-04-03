@@ -34,9 +34,9 @@
     </script>
 
 </head>
-<body class="antialiased">
+<body class="antialiased flex flex-col min-h-screen">
 
-<div class="h-full dark:bg-gray-800 bg-white">
+<div class="dark:bg-gray-800 bg-white">
 
     <nav class="relative px-4 py-4 flex justify-between items-center bg-green-950 border-b-2 border-gray-100">
         <a class="text-3xl font-bold leading-none" href="/">
@@ -92,6 +92,15 @@
                 </svg>
             </li>
             <li><a class="text-sm text-white hover:text-white font-bold" href="/account">Account</a></li>
+            <li class="text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                </svg>
+            </li>
+
+            <li><a class="text-sm text-white hover:text-white font-bold" href="/auction">Auction</a></li>
         </ul>
 
         @auth()
@@ -178,22 +187,22 @@
 
                 </div>
                 <p class="my-4 text-xs text-center text-gray-400">
-                    <span>Copyright © 2021</span>
+                    <span>Copyright &copy; {{date("Y")}}</span>
                 </p>
             </div>
         </nav>
     </div>
 
-    <!-- Page Content -->
-    <main>
-        {{ $slot }}
-    </main>
-
 </div>
+
+<!-- Page Content -->
+<main class="dark:bg-gray-800 bg-white flex-grow" >
+    {{ $slot }}
+</main>
 
 <!-- component -->
 <!-- This is an example component -->
-<div class=" bg-gray-900">
+<div class="bg-gray-900 text-white p-4 text-center">
     <div class="max-w-2xl mx-auto text-white py-10">
         <div class="text-center">
             <h3 class="text-3xl mb-3"> Download Our App </h3>
@@ -216,7 +225,7 @@
             </div>
         </div>
         <div class="mt-28 flex flex-col md:flex-row md:justify-between items-center text-sm text-gray-400">
-            <p class="order-2 md:order-1 mt-8 md:mt-0"> &copy; Beautiful Footer, 2021. </p>
+            <p class="order-2 md:order-1 mt-8 md:mt-0"> &copy; BidBounty, {{date("Y")}}. </p>
             <div class="order-1 md:order-2">
                 <span class="px-2">About us</span>
                 <span class="px-2 border-l">Contact us</span>

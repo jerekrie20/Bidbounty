@@ -1,73 +1,26 @@
-1. Lots Page
-    - STATUS
-        - Make status more dymamic
-        - Find a way for status to be updated automatically without refreshing the page and user input
-        - Options: A queueable job
-        - Create a job that will update the status of a lot to live after the start time has been reached
-        <?php
+1. Items
+    Features:
+        1. Add a view button to view the item
+          -When you click the view button, it will open up a modal that will show the item's details
+        2. Show the amount of people that added the item to their watchlist
+        3. Add jobs to the item
 
-        namespace App\Jobs;
+    BUGS:
+        1. Fix having to reselect start and end times when updating an item
 
-        use App\Models\Lot;
-        use Illuminate\Bus\Queueable;
-        use Illuminate\Contracts\Queue\ShouldQueue;
-        use Illuminate\Foundation\Bus\Dispatchable;
-        use Illuminate\Queue\InteractsWithQueue;
-        use Illuminate\Queue\SerializesModels;
+    FUTURE REDESIGNS:
+        1. Redesign the data table to be more user friendly and responsive
+        2. Make the form more user friendly and responsive
+        3. Flash out dark vs light mode
 
-        class UpdateLotStatus implements ShouldQueue
-        {
-            use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+2. Lots
 
-            protected Lot $lot;
-
-            public function __construct(Lot $lot)
-            {
-                $this->lot = $lot;
-            }
-
-            public function handle()
-            {
-                $this->lot->update(['status' => 'live']);
-            }
-        }
-        }
-
-        $lot = Lot::find($id);
-        $auctionDateTime = $lot->auction_date; // assuming it's a datetime object
-        UpdateLotStatus::dispatch($lot)->delay($auctionDateTime->diffInSeconds(now()));
-
-        - For when the auction is over, create a job that will update the status of a lot to pending
-
-        <?php
-
-        namespace App\Jobs;
-
-        use App\Models\Lot;
-        use Illuminate\Bus\Queueable;
-        use Illuminate\Contracts\Queue\ShouldQueue;
-        use Illuminate\Foundation\Bus\Dispatchable;
-        use Illuminate\Queue\InteractsWithQueue;
-        use Illuminate\Queue\SerializesModels;
-
-        class EndLotAuction implements ShouldQueue
-        {
-            use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-            protected Lot $lot;
-
-            public function __construct(Lot $lot)
-            {
-                $this->lot = $lot;
-            }
-
-            public function handle()
-            {
-                $this->lot->update(['status' => 'pending']);
-            }
-        }
-        }
-
-        $lot = Lot::find($id);
-        $auctionEndDateTime = $lot->auction_end_date; // assuming it's a datetime object
-        EndLotAuction::dispatch($lot)->delay($auctionEndDateTime->diffInSeconds(now()));
+    Features:
+        1. Add a view button to view the lot
+          -When you click the view button, it will open up a modal that will show the lot's details
+        2. Remove current Category and add a Main Category for lots
+    FUTURE REDESIGNS:
+        1. Redesign the data table to be more user friendly and responsive
+        2. Make the form more user friendly and responsive
+        3. Update the Categories section to be like the items section
+        3. Flash out dark vs light mode

@@ -243,9 +243,20 @@
         </table>
 
         <div class="mt-4 mb-32 flex justify-center">
-            {{ $lots->links() }}
+            {{ $lots->links(data: ['scrollTo' => false])}}
         </div>
+
+
     </div>
+
+    @script
+    <script>
+        Livewire.on('scrollToTop', function() {
+            window.scrollTo({ top: 20, behavior: 'smooth' })
+        });
+    </script>
+
+    @endscript
 
 
 </div>

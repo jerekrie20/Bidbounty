@@ -43,6 +43,18 @@ class DisplayData extends Component
     }
 
 
+    public function remove($id)
+    {
+        $this->dispatch('delete', $id);
+    }
+    public function edit($id)
+    {
+        $this->dispatch('edit', $id);
+
+        // Emit the event
+        $this->dispatch('scrollToTop');
+    }
+
 
 
 

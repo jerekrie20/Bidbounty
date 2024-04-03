@@ -20,8 +20,8 @@ return new class extends Migration
             $table->decimal('starting_bid', 10, 2);
             $table->decimal('current_bid', 10, 2);
             $table->decimal('reserve_price', 10, 2)->nullable()->default(null);
-            $table->dateTime('start_time')->index('items_start_idx');
-            $table->dateTime('end_time')->index('items_end_idx');
+            $table->time('start_time')->index('items_start_idx');
+            $table->time('end_time')->index('items_end_idx');
             $table->enum('status', ['available', 'pending', 'sold'])->index('items_status_idx')->default('available');
             $table->json('images')->nullable()->default(null);
             $table->timestamps();
