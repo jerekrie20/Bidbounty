@@ -18,8 +18,8 @@ class ImageService
         if ($image) {
             // Read the uploaded image file
             $img = $this->imageManager->read($image->getRealPath());
-            // Resize the image to 300x300
-            $img->scale(width: 300);
+            // Resize the image to 400x300
+            $img->cover(400,300,'center');
             // Generate a new filename
             $filename = 'lot_' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
 
@@ -83,7 +83,7 @@ class ImageService
                 // Read the uploaded image file
                 $img = $this->imageManager->read($image->getRealPath());
                 // Resize the image to 300x300
-                $img->scale(width: 300);
+                $img->cover(400,300,'center');
                 // Generate a new filename
                 $filename = 'item_' . rand(1000, 9999) . '.' . $image->getClientOriginalExtension();
 

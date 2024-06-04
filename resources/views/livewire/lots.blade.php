@@ -28,7 +28,11 @@
             </div>
 
             <div class="mb-3">
-                <p class="text-center font-bold text-xl">File Upload</p>
+                <p class="text-center font-bold text-xl mb-2">File Upload</p>
+                <p class="text-center font-bold text-sm mb-2 text-danger-red">
+                    ** Image are being scaled down to 400x300 <br>
+                    *** Aspect ratio of 4:3 is maintained
+                </p>
                 <label for="image-upload"
                        class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                     <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -203,7 +207,7 @@
             @foreach($lots as $index => $lot)
                 <tr class="{{ $index % 2 == 0 ? 'bg-gray-200' : 'bg-white' }}">
                     <td class="px-6 py-4">
-                        <img src="{{ asset('lotImages/' . $lot->image)  }}" alt="{{ $lot->title }}" class="w-10 h-10">
+                        <img src="{{ asset($lot->image ? 'lotImages/' . $lot->image : 'lotImages/default.webp')  }}" alt="{{ $lot->title }}" class="w-10 h-10">
                     </td>
                     <td class="px-6 py-4">{{ $lot->title }}</td>
                     <td class="px-6 py-4">{{ \Illuminate\Support\Str::limit($lot->description, 100) }}</td>

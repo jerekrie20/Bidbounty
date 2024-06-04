@@ -26,12 +26,13 @@ class Lots extends Component
     public $statusOption = ['upcoming', 'live', 'pending', 'closed'];
     public $start_date;
     public $end_date;
+    #[Locked]
     public $lotId;
 
     public $mode = 'create';
     public $formAction = 'submit';
 
-    public $category=[];
+    public $category = [];
 
     public $sortBy = '';
     public $sortDirection = 'asc';
@@ -112,7 +113,10 @@ class Lots extends Component
 
     public function edit($lotId): void
     {
-        $lot = auth()->user()->lots()->where('id', $lotId)->first();
+        $lot = Lot::find($lotId);
+
+        $this->authorize('edit', $lot); // Check if the user is authorized to edit the lot (Policy)
+
         $this->title = $lot->title;
         $this->description = $lot->description;
         $this->status = $lot->status;
@@ -133,6 +137,9 @@ class Lots extends Component
     {
         $this->validate();
         $lot = Lot::find($this->lotId);
+
+        $this->authorize('update', $lot); // Check if the user is authorized to update the lot (Policy)
+
         $imageService = new ImageService();
         //If image is set, update the image, otherwise keep the old image
         if ($this->image) {
@@ -161,7 +168,7 @@ class Lots extends Component
         $endDelay = $auctionEndDateTime->diffInSeconds(now());
 
         // if the start time is in the past or less than 5 minutes from now
-        if ($auctionStartDateTime < now() || $startDelay < 5 * 60){
+        if ($auctionStartDateTime < now() || $startDelay < 5 * 60) {
             // handle this case, either dispatch immediately, log an error, etc.
             UpdateLotStatus::dispatch($lot);
         } else {
@@ -183,7 +190,16 @@ class Lots extends Component
     //Delete a lot
     public function delete($lotId): void
     {
-        $lot = auth()->user()->lots()->where('id', $lotId)->first();
+        $lot = Lot::find($lotId);
+
+        //If the user is not the owner of the lot, return an error message
+
+        $this->authorize('delete', $lot);
+
+        //Delete the image
+        $imageService = new ImageService();
+        $imageService->deleteImage($lot->image, 'lotImages');
+
         $lot->delete();
     }
 
@@ -218,9 +234,11 @@ class Lots extends Component
             $this->sortBy = 'id';
         }
         $lots = Lot::query()
-            ->where('title', 'like', '%' . $this->search . '%')
-            ->orwhere('description', 'like', '%' . $this->search . '%' )
-            ->where('user_id', auth()->id())
+            ->where(function ($query) {
+                $query->where('title', 'like', '%' . $this->search . '%')
+                    ->orWhere('description', 'like', '%' . $this->search . '%');
+            })
+            ->where('user_id', auth()->user()->id)
             ->orderBy($this->sortBy, $this->sortDirection)
             ->paginate($this->perPage);
 

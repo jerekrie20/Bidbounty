@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/app.css')
-    <title>BidBounty</title>
+    <title>{{ $title ?? 'BidBounty' }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -12,83 +12,79 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@400;500;700&display=swap"
           rel="stylesheet">
 
+    <script>
+        function setDefaultAvatar(avatarFilename) {
+            // Set the value of a hidden input field to the selected avatar filename
+            document.getElementById('selectedAvatar').value = avatarFilename;
+
+            // Clear the file input if a default avatar is selected
+            document.getElementById('dropzone-file').value = '';
+            document.getElementById('file-instruction').textContent = avatarFilename;
+            document.getElementById('file-name').textContent = '';
+
+            // Update the displayed avatar
+            document.getElementById('currentAvatar').src = "{{ asset('avatars') }}/" + avatarFilename;
+        }
+
+        function clearDefaultAvatarSelection() {
+            // Clear the selected avatar when a file is uploaded
+            document.getElementById('selectedAvatar').value = '';
+        }
+
+    </script>
+
 </head>
-<body class="antialiased">
+<body class="antialiased flex flex-col min-h-screen">
 
-<div class="h-full dark:bg-gray-800 bg-white">
+<div class="bg-midnight-blue">
 
-    <nav class="relative px-4 py-4 flex justify-between items-center bg-white border-b-2 border-gray-100">
+    <nav class="relative px-4 py-4 flex justify-between items-center bg-midnight-blue border-b-2 border-gray-100">
         <a class="text-3xl font-bold leading-none" href="/">
             <x-theme.logo/>
         </a>
         <div class="lg:hidden">
-            <button class="navbar-burger flex items-center text-blue-600 p-3">
+            <button class="navbar-burger flex items-center text-rust-orange p-3">
                 <svg class="block h-4 w-4 fill-current" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <title>Mobile menu</title>
                     <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
                 </svg>
             </button>
         </div>
-        <ul class="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
-            <li><a class="text-sm text-gray-800 hover:text-green-600 font-bold" href="/">Home</a></li>
-            <li class="text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                </svg>
-            </li>
-            <li><a class="text-sm text-gray-800 hover:text-green-600 font-bold" href="#">About Us</a></li>
-            <li class="text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                </svg>
-            </li>
-            <li><a class="text-sm text-gray-800 hover:text-green-600 font-bold" href="#">Services</a></li>
-            <li class="text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                </svg>
-            </li>
-            <li><a class="text-sm text-gray-800 hover:text-green-600 font-bold" href="#">Pricing</a></li>
-            <li class="text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" class="w-4 h-4 current-fill"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                </svg>
-            </li>
-            <li><a class="text-sm text-gray-800 hover:text-green-600 font-bold" href="#">Contact</a></li>
-        </ul>
+        <x-menus.nav>
+            <x-menus.nav-items name="Auctions" href="/auction"></x-menus.nav-items>
+            <x-icons.dots-vertical></x-icons.dots-vertical>
+            <x-menus.nav-items name="Bids" href="/bids"></x-menus.nav-items>
+            <x-icons.dots-vertical></x-icons.dots-vertical>
+            <x-menus.nav-items name="Wishlist" href="/wishlist"></x-menus.nav-items>
+            <x-icons.dots-vertical></x-icons.dots-vertical>
+            <x-menus.nav-items name="Messages" href="/message"></x-menus.nav-items>
+            <x-icons.dots-vertical></x-icons.dots-vertical>
+            <x-menus.nav-items name="Payments" href="/payments"></x-menus.nav-items>
+        </x-menus.nav>
 
         @auth()
             <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-sky-blue hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200"
                href="/dashboard">Dashboard</a>
 
-            <a class="hidden lg:inline-block mr-2 py-2 px-6 bg-wheat-yellow hover:bg-sky-blue text-sm text-black font-bold rounded-xl transition duration-200"
-               href="/auction">Auction</a>
-            <a class="hidden lg:inline-block py-2 px-6 bg-green-600 hover:bg-earth-green text-sm text-white font-bold rounded-xl transition duration-200"
-               href="/logout">Logout</a>
-
+            <form action="/logout" method="post">
+                @csrf
+                <button
+                    class="hidden lg:inline-block py-2 px-6 bg-green-600 hover:bg-white hover:text-gray-900 text-sm text-white font-bold rounded-xl transition duration-200"
+                    type="submit">Logout
+                </button>
+            </form>
         @endauth
         @guest()
             <a class="hidden lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-sky-blue hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200"
                href="/login">Sign In</a>
-            <a class="hidden lg:inline-block  lg:mr-3 py-2 px-6 bg-green-600 hover:bg-earth-green text-sm text-white font-bold rounded-xl transition duration-200"
+            <a class="hidden lg:inline-block py-2 px-6 bg-green-600 hover:bg-earth-green text-sm text-white font-bold rounded-xl transition duration-200"
                href="/register">Sign up</a>
-
-            <a class="hidden lg:inline-block py-2 px-6 bg-wheat-yellow hover:bg-sky-blue text-sm text-black font-bold rounded-xl transition duration-200"
-               href="/auction">Auction</a>
         @endguest
     </nav>
     <div class="navbar-menu relative z-50 hidden">
         <div class="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"></div>
         <nav
-            class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-white border-r overflow-y-auto">
+            class="fixed top-0 left-0 bottom-0 flex flex-col w-5/6 max-w-sm py-6 px-6 bg-midnight-blue border-r overflow-y-auto">
             <div class="flex items-center mb-8">
                 <a class="mr-auto text-3xl font-bold leading-none" href="#">
                     <x-theme.logo/>
@@ -104,71 +100,68 @@
             <div>
                 <ul>
                     <li class="mb-1">
-                        <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        <a class="block p-4 text-sm font-semibold text-cloud-white rounded"
                            href="#">Home</a>
                     </li>
                     <li class="mb-1">
-                        <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        <a class="block p-4 text-sm font-semibold text-cloud-white rounded"
                            href="#">About Us</a>
                     </li>
                     <li class="mb-1">
-                        <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        <a class="block p-4 text-sm font-semibold text-cloud-white rounded"
                            href="#">Services</a>
                     </li>
                     <li class="mb-1">
-                        <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
+                        <a class="block p-4 text-sm font-semibold text-cloud-white rounded"
                            href="#">Pricing</a>
                     </li>
                     <li class="mb-1">
-                        <a class="block p-4 text-sm font-semibold text-gray-400 hover:bg-blue-50 hover:text-blue-600 rounded"
-                           href="#">Contact</a>
+                        <a class="block p-4 text-sm font-semibold text-cloud-white rounded"
+                           href="#">Account</a>
                     </li>
                 </ul>
             </div>
-
-
             <div class="mt-auto">
                 <div class="pt-6">
 
                     @auth()
-                        <div class="flex flex-col">
-                            <a class="mb-3 py-2 px-6 bg-sky-blue hover:bg-gray-100 text-center text-lg text-gray-900 font-bold  rounded-xl transition duration-200"
+                        <div class="flex justify-center ">
+                            <a class="lg:inline-block lg:ml-auto lg:mr-3 py-2 px-6 bg-sky-blue hover:bg-gray-100 text-sm text-gray-900 font-bold  rounded-xl transition duration-200 mr-2"
                                href="/dashboard">Dashboard</a>
-                            <a class="mb-3 py-2 px-6 bg-green-600 hover:bg-earth-green text-center text-lg text-white font-bold rounded-xl transition duration-200"
-                               href="/logout">Logout</a>
-                            <a class="mb-3 py-2 px-6 bg-wheat-yellow hover:bg-sky-blue text-center  text-lg text-black font-bold rounded-xl transition duration-200"
-                               href="/auction">Auction</a>
+
+                            <form action="/logout" method="post">
+                                @csrf
+                                <button
+                                    class="lg:inline-block py-2 px-6 bg-green-600 hover:bg-white hover:text-gray-900 text-sm text-white font-bold rounded-xl transition duration-200"
+                                    type="submit">Logout
+                                </button>
+                            </form>
                         </div>
                     @endauth
                     @guest()
-                        <div class="flex flex-col">
-                            <a class=" mb-3 py-2 px-6 bg-sky-blue hover:bg-gray-100 text-center text-lg text-gray-900 font-bold  rounded-xl transition duration-200"
-                               href="/login">Sign In</a>
-                            <a class="mb-3 py-2 px-6 bg-green-600 hover:bg-earth-green text-center  text-lg text-white font-bold rounded-xl transition duration-200"
-                               href="/register">Sign up</a>
-                            <a class="mb-3 py-2 px-6 bg-wheat-yellow hover:bg-sky-blue text-center  text-lg text-black font-bold rounded-xl transition duration-200"
-                               href="/auction">Auction</a>
-                        </div>
+                        <x-theme.primaryButton route="/login">Sign In</x-theme.primaryButton>
+                        <x-theme.secondaryButton route="/register">Sign Up</x-theme.secondaryButton>
                     @endguest
+
 
                 </div>
                 <p class="my-4 text-xs text-center text-gray-400">
-                    <span>Copyright © 2021</span>
+                    <span>Copyright &copy; {{date("Y")}}</span>
                 </p>
             </div>
         </nav>
     </div>
 
-    <!-- Page Content -->
-    <main>
-        {{ $slot }}
-    </main>
-
 </div>
+
+<!-- Page Content -->
+<main class="dark:bg-gray-800 bg-white flex-grow" >
+    {{ $slot }}
+</main>
 
 <!-- component -->
 <!-- This is an example component -->
-<div class=" bg-gray-900">
+<div class="bg-midnight-blue text-white p-4 text-center">
     <div class="max-w-2xl mx-auto text-white py-10">
         <div class="text-center">
             <h3 class="text-3xl mb-3"> Download Our App </h3>
@@ -191,7 +184,7 @@
             </div>
         </div>
         <div class="mt-28 flex flex-col md:flex-row md:justify-between items-center text-sm text-gray-400">
-            <p class="order-2 md:order-1 mt-8 md:mt-0"> &copy; Beautiful Footer, 2021. </p>
+            <p class="order-2 md:order-1 mt-8 md:mt-0"> &copy; BidBounty, {{date("Y")}}. </p>
             <div class="order-1 md:order-2">
                 <span class="px-2">About us</span>
                 <span class="px-2 border-l">Contact us</span>
@@ -241,8 +234,19 @@
                 });
             }
         }
+
+
+        // document.getElementById('dropzone-file').addEventListener('change', function (event) {
+        //     var fileName = event.target.files[0].name;
+        //     document.getElementById('file-instruction').textContent = "Selected file: ";
+        //     document.getElementById('file-name').textContent = fileName;
+        // });
+
     });
+
+
 </script>
 </body>
 </html>
+
 

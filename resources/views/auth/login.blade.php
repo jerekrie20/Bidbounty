@@ -19,17 +19,16 @@
         </div>
     </section>
 
-    <div class="flex justify-center content-center w-3/4 xl:w-1/2 m-auto mt-20 ">
+    <div class="flex justify-center content-center  md:w-3/4 xl:w-1/2 m-auto mt-20 ">
 
-        <form action="/login" method="post" class="w-full mb-20 pb-10 shadow-md shadow-white/50" >
+        <form action="/login" method="post" class="w-full mb-20 pb-10 md:shadow-md md:shadow-white/50" >
             @csrf
 
             <div class="mt-10 text-center ">
                 <h1 class="mb-4 text-4xl dark:text-emerald-100 font-bold text-gray-700 ">Login</h1>
             </div>
 
-            <div class="flex justify-center ">
-
+            <div class="flex justify-center flex-col md:flex-row ">
 
                 <x-forms.email id="email" name="email" placeholder="Your Email Address" />
                  <span class="mr-1 ml-1"></span>

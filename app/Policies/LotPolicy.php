@@ -33,19 +33,34 @@ class LotPolicy
     }
 
     /**
+     * Determine whether the user can edit the model.
+     */
+
+    public function edit(User $user, Lot $lot): Response
+    {
+        return $user->id === $lot->user_id
+            ? Response::allow()
+            : Response::deny('You do not own this lot.');
+    }
+
+    /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Lot $lot): bool
+    public function update(User $user, Lot $lot): Response
     {
-        //
+        return $user->id === $lot->user_id
+            ? Response::allow()
+            : Response::deny('You do not own this lot.');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Lot $lot): bool
+    public function delete(User $user, Lot $lot): Response
     {
-        //
+        return $user->id === $lot->user_id
+            ? Response::allow()
+            : Response::deny('You do not own this lot.');
     }
 
     /**
