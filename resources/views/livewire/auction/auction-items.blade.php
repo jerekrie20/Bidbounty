@@ -1,47 +1,7 @@
-<?php
-
-use App\Models\Lot;
-use Livewire\WithPagination;
-use function Livewire\Volt\{computed, layout, state, title, usesPagination, with, mount};
-
-usesPagination();
-
-layout('components.layouts.auction');
-title('Auctions');
-
-state(['search'])->url();
-state(['status'])->url();
-state(['category'])->url();
-state(['start_date'])->url();
-state(['end_date'])->url();
-state(['perPage'])->url();
-
-with(fn() => [
-    'lots' => Lot::query()
-        ->where(function ($query) {
-            $query->where('title', 'like', '%' . $this->search . '%')
-                ->orWhere('description', 'like', '%' . $this->search . '%');
-        })
-        ->when($this->status, fn($query) => $query->where('status', $this->status))
-        ->when($this->start_date, fn($query) => $query->where('start_date', '>=', $this->start_date))
-        ->when($this->end_date, fn($query) => $query->where('end_date', '<=', $this->end_date))
-        ->paginate($this->perPage),
-]);
-
-//Reset Filters/search
-$resetFilters = fn() => $this->reset(['search', 'status', 'category', 'start_date', 'end_date', 'perPage']);
-
-//Computed Properties
-$bgColor = computed(fn() => [
-    'upcoming' => 'bg-blue-500',
-    'live' => 'bg-green-500',
-    'pending' => 'bg-yellow-500',
-    'closed' => 'bg-red-500',
-]);
-?>
+@php use function Livewire\Volt\js; @endphp
 <div>
-
-    <h1 class="mt-10 mb-4 text-4xl dark:text-emerald-100 font-bold text-gray-700 pb-4 pt-3 text-center">Auctions</h1>
+    <h1 class="mt-10 mb-4 text-4xl dark:text-emerald-100 font-bold text-gray-700 pb-4 pt-3 text-center">Auction
+        Items</h1>
 
     <!-- Search Form -->
     <div class="flex justify-between items-center xl:w-2/3 m-auto">
@@ -120,45 +80,45 @@ $bgColor = computed(fn() => [
 
 
     <div class="flex flex-col items-center flex-wrap mt-10 m-auto md:flex-row lg:w-3/4">
-        @if($lots->isEmpty())
+        @if($auctionItems->isEmpty())
             <div class="w-full p-4 text-center">
-                <h1 class="text-2xl font-bold text-white">No Lots Found</h1>
+                <h1 class="text-2xl font-bold text-white">No Items Found</h1>
             </div>
         @endif
-        @foreach($lots as $lot)
-            <a href="/auction/{{ $lot->id }}">
+        @foreach($auctionItems as $item)
+            <a href="/auction/item/{{ $item->id }}">
 
-                <div class="w-full md:w-1/2 lg:w-1/3 p-4 hover:cursor-pointer md:h-[40rem]">
+                <div class="w-full md:w-1/2 lg:w-1/3 p-4 hover:cursor-pointer md:h-[41rem]">
                     <div class="bg-white rounded-lg overflow-hidden h-full shadow-lg hover:shadow-wheat-yellow">
                         <div class="relative">
+                            @php
+                                $image = json_decode($item->images);
+                            @endphp
+
                             <img class="w-full h-auto object-cover object-center"
-                                 src="{{ asset($lot->image ? 'lotImages/' . $lot->image : 'lotImages/default.webp') }}"
-                                 alt="{{ $lot->title }} Image">
-                            <div
-                                class="absolute top-0 right-0 p-2 font-bold {{$this->bgColor[$lot->status]}}">{{$lot->status}}</div>
+                                 src="{{ asset($image[0][0]  ? 'items/' . $image[0][0] : 'items/default.webp') }}"
+                                 alt="{{ $item->title }} Image">
+                            <div class="absolute top-0 right-0 p-2 font-bold {{$this->bgColor($item->status)}}">
+                                {{$item->status}}
+                            </div>
                         </div>
                         <div class="flex justify-between bg-rust-orange font-semibold">
-                            <div>
-                                <p class="p-2 text-white">{{ \Carbon\Carbon::parse($lot->start_date)->format('Y-m-d') }}</p>
-                                <p class="p-2 text-white ">{{ \Carbon\Carbon::parse($lot->end_date)->format('Y-m-d') }}</p>
-                            </div>
-                            <div>
-                                <p class="p-2 text-white"> {{ \Carbon\Carbon::parse($lot->start_date)->format('h:i A') }}</p>
-                                <p class="p-2 text-white"> {{ \Carbon\Carbon::parse($lot->end_date)->format('h:i A') }}</p>
-                            </div>
-
+                            <p class="p-2 text-white">
+                                Start: {{ \Carbon\Carbon::parse($item->start_time)->format('h:i A') }}</p>
+                            <p class="p-2 text-white">
+                                End: {{ \Carbon\Carbon::parse($item->end_time)->format('h:i A') }}</p>
                         </div>
 
                         <div class="flex justify-center mt-2">
-                            @foreach($lot->categories as $category)
+                            @foreach($item->categories as $category)
                                 <p class="p-1">{{ $category->name }}</p><i
                                     class="p-2 fa-solid fa-ellipsis-vertical fa-beat text-midnight-blue"></i>
                             @endforeach
                         </div>
 
                         <div class='p-4 text-center'>
-                            <h2 class='text-2xl font-bold text-gray-800'>{{ $lot->title }}</h2>
-                            <p class='mt-2 text-gray-600'>{{ $lot->description }}</p>
+                            <h2 class='text-2xl font-bold text-gray-800'>{{ $item->title }}</h2>
+                            <p class='mt-2 text-gray-600'>{{ $item->description }}</p>
                         </div>
 
 
@@ -174,7 +134,4 @@ $bgColor = computed(fn() => [
         @endforeach
     </div>
 
-    <div class="mt-4">
-        {{ $lots->links() }}
-    </div>
 </div>

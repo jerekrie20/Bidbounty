@@ -29,7 +29,7 @@
 
             <div class="mb-3">
                 <p class="text-center font-bold text-xl mb-2">File Upload</p>
-                <p class="text-center font-bold text-sm mb-2 text-danger-red">
+                <p class="text-center font-bold text-sm mb-2 text-soil-brown">
                     ** Image are being scaled down to 400x300 <br>
                     *** Aspect ratio of 4:3 is maintained
                 </p>
