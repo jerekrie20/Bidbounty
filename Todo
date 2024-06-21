@@ -24,3 +24,8 @@
         2. Make the form more user friendly and responsive
         3. Update the Categories section to be like the items section
         3. Flash out dark vs light mode
+
+
+Packages:
+    1. https://github.com/diglactic/laravel-breadcrumbs *might use for breadcrumbs
+    2. https://wireui.dev/packages/breadcrumbs *Another breadcrumb package

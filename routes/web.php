@@ -11,7 +11,7 @@ use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('index');
-});
+})->name('home');
 
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
