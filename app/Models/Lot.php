@@ -75,7 +75,7 @@ use /**
  * Relationships:
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Item[] $items
  * @property-read int|null $items_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $categories
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AuctionCategory[] $categories
  * @property-read int|null $categories_count
  */
 class Lot extends Model
@@ -112,7 +112,7 @@ class Lot extends Model
     // Lot can have many categories
     public function categories(): belongsToMany
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(AuctionCategory::class, 'category_lot', 'lot_id', 'category_id');
     }
 
     //Lot belongs to a user

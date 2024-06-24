@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Jobs\EndLotAuction;
 use App\Jobs\UpdateLotStatus;
+use App\Models\AuctionCategory;
 use App\Models\Category;
 use App\Models\Lot;
 use App\Services\ImageService;
@@ -227,7 +228,7 @@ class Lots extends Component
     public function render()
     {
 
-        $categories = Category::all();
+        $categories = AuctionCategory::all();
 
         //Get lots that belong to the user
         if ($this->sortBy == '') {

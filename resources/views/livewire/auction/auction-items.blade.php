@@ -1,5 +1,50 @@
 @php use function Livewire\Volt\js; @endphp
-<div>
+<div x-data="{ show: @entangle('show') }" >
+
+    <div class="w-1/2 m-auto flex flex-wrap justify-around mt-2">
+        <p class="bg-peach-pink p-3 font-semibold  rounded-lg">Lot: {{$lot['title']}}</p>
+        <p class="bg-blue-500 p-3 font-semibold  rounded-lg">Status: {{$lot['status']}}</p>
+        <p class="bg-green-500 p-3 font-semibold  rounded-lg">Start Date: {{ \Carbon\Carbon::parse($lot['start_date'])->format('Y-m-d') }}</p>
+        <p class="bg-red-200 p-3 font-semibold  rounded-lg">End Date: {{ \Carbon\Carbon::parse($lot['end_date'])->format('Y-m-d') }}</p>
+        <button wire:click="$set('showModal', true)" class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple">
+            More Info
+        </button>
+    </div>
+
+    @if($showModal)
+        <div wire:transition.out.opacity.duration.200ms class="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 p-10 z-10">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-xl font-semibold mb-4">Lot: {{$lot['title']}}</h2>
+                <hr>
+                <div class="flex justify-between mt-4">
+                    <p class="font-semibold">Status:</p>
+                    <p class="font-semibold">{{$lot['status']}}</p>
+                </div>
+                <hr>
+                <div class="flex justify-between mt-4">
+                    <p class="font-semibold">Start Date:</p>
+                    <p class="font-semibold">{{ \Carbon\Carbon::parse($lot['start_date'])->format('Y-m-d') }}</p>
+                </div>
+                <hr>
+                <div class="flex justify-between mt-4">
+                    <p class="font-semibold">End Date:</p>
+                    <p class="font-semibold">{{ \Carbon\Carbon::parse($lot['end_date'])->format('Y-m-d') }}</p>
+                </div>
+                <hr>
+                <div class="mt-4">
+                    <p class="font-semibold mb-2">Description: </p>
+                    <p class="font-semibold">{{$lot['description']}}</p>
+                </div>
+
+
+                <div class="flex justify-end mt-4">
+                    <button wire:click.stop="$set('showModal', false)" class="px-4 py-2 rounded mr-2 text-white bg-blue-500 hover:bg-blue-600">Exit</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+
     <h1 class="mt-10 mb-4 text-4xl dark:text-emerald-100 font-bold text-gray-700 pb-4 pt-3 text-center">Auction
         Items</h1>
 
@@ -52,18 +97,18 @@
         <div class="p-4 font-semibold text-xl">
             <label for="search" class="text-white">Search:</label>
             <input type="text" name="search" wire:model.live.debounce.500ms="search"
-                   class="text-rust-orange caret-rust-orange">
+                   class="text-rust-orange caret-rust-orange  rounded-lg">
         </div>
         <div class="p-4 font-semibold text-xl">
             <!-- date -->
             <label for="start_date" class="text-white">Start Time:</label>
             <input type="time" name="start_time" wire:model.live.debounce.500ms="start_time"
-                   class="text-rust-orange caret-rust-orange">
+                   class="text-rust-orange caret-rust-orange  rounded-lg">
         </div>
         <div class="p-4 font-semibold text-xl">
             <!-- date -->
             <label for="end_date" class="text-white">End Time:</label>
-            <input type="time" name="end_time" wire:model.live.debounce.500ms="end_time" class="text-rust-orange caret-rust-orange">
+            <input type="time" name="end_time" wire:model.live.debounce.500ms="end_time" class="text-rust-orange caret-rust-orange  rounded-lg">
         </div>
     </div>
 
@@ -79,22 +124,32 @@
                 </select>
             </section>
         </div>
-        <div class="p-4 font-semibold text-xl">
+        <div class="p-4 font-semibold text-xl relative">
             <!-- category -->
             <section>
-                <select name="category" id="category"
-                        class="bg-sky-blue text-black text-lg border-2 w-full p-2 rounded-lg">
-                    <option value="">Select Category</option>
-                    <option value="art">Art</option>
-                    <option value="antiques">Antiques</option>
-                    <option value="jewelry">Jewelry</option>
-                    <option value="collectibles">Collectibles</option>
-                    <option value="furniture">Furniture</option>
-                    <option value="home">Home</option>
-                    <option value="electronics">Electronics</option>
-                    <option value="automotive">Automotive</option>
-                    <option value="other">Other</option>
-                </select>
+                <button @click="show = !show" id="dropdownBgHoverButton"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Categories
+                    <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                </button>
+
+                <!-- Dropdown menu -->
+
+                <div @click.away="show = false" x-show="show" class="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 text-xl sm:text-lg w-50 sm:w-screen sm:max-w-lg">
+
+                    <ul class="py-1 flex justify-start flex-wrap">
+                        @foreach($categories as $category)
+                            <li class="px-4 py-2 hover:bg-gray-100">
+                                <input type="checkbox" id="{{ $category->id }}" value="{{ $category->id }}" wire:model.live="category">
+                                <label for="{{ $category->id }}">{{ $category->name }}</label>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                </div>
+
             </section>
         </div>
 
@@ -102,10 +157,10 @@
             <section>
                 <select name="perPage" id="perPage" wire:model.live="perPage"
                         class="bg-sky-blue text-black text-lg border-2 w-full p-2 rounded-lg">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
+                    <option value="9">9</option>
+                    <option value="18">18</option>
+                    <option value="27">27</option>
+                    <option value="36">36</option>
                 </select>
             </section>
         </div>
