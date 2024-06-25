@@ -4,12 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/app.css')
+    @vite('node_modules/lightbox2/dist/css/lightbox.min.css')
     <title>{{ $title ?? 'BidBounty' }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet"/>
     <script src="https://kit.fontawesome.com/9a1bef43f6.js" crossorigin="anonymous"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@400;500;700&display=swap"
           rel="stylesheet">
 
@@ -247,6 +249,9 @@
 
 
 </script>
+@vite('resources/js/app.js')
+@vite('node_modules/lightbox2/dist/js/lightbox.min.js')
+
 </body>
 </html>
 

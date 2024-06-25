@@ -5,6 +5,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LotController;
 use App\Http\Controllers\UserController;
 use App\Livewire\AuctionItems;
+use App\Livewire\AuctionSingleItem;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -24,6 +25,7 @@ Route::post('register', [AuthController::class, 'register']);
 Volt::route('/auction', 'auction.auction-list')->name('auction.list');
 
 Route::get('/auction/{id}',AuctionItems::class)->name('auction.item');
+Route::get('/auction/{lotId}/item/{itemId}', AuctionSingleItem::class)->name('auction.single.item');
 
 //user middleware group
 Route::middleware(['auth'])->group(function () {

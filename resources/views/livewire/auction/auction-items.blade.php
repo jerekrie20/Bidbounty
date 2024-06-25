@@ -185,7 +185,7 @@
             </div>
         @endif
         @foreach($auctionItems as $item)
-            <a href="/auction/item/{{ $item->id }}">
+            <a href="/auction/{{$lot->id}}/item/{{ $item->id }}">
 
                 <div class="w-full md:w-1/2 lg:w-1/3 p-4 hover:cursor-pointer md:h-[41rem]">
                     <div class="bg-white rounded-lg overflow-hidden h-full shadow-lg hover:shadow-wheat-yellow">
