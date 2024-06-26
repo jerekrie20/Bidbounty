@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string("country_id")->nullable();
             $table->string("phone")->nullable();
             $table->boolean("approved")->default(false);
+            $table->string('timezone')->default('America/Chicago');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

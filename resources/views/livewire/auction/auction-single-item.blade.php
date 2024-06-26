@@ -7,7 +7,7 @@
         <p class="bg-red-200 p-3 font-semibold rounded-lg mb-2 mr-2 sm:m-0">End
             Date: {{ \Carbon\Carbon::parse($lot['end_date'])->format('Y-m-d') }}</p>
         <button wire:click="$set('showModal', true)"
-                class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple">
+                class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mt-3">
             More Info
         </button>
     </div>
@@ -125,9 +125,9 @@
             <div class="w-full sm:w-1/2">
                 <div class="flex justify-between bg-rust-orange font-semibold">
                     <p class="p-2 text-white">
-                        Start: {{ \Carbon\Carbon::parse($item->start_time)->format('h:i A') }}</p>
+                        Start: Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('h:i A') }}</p>
                     <p class="p-2 text-white">
-                        End: {{ \Carbon\Carbon::parse($item->end_time)->format('h:i A') }}</p>
+                        End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('h:i A') }}</p>
                 </div>
 
                 <div class="flex justify-between mt-2">

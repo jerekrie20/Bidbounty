@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Country;
 use App\Models\State;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class UpdateAccount extends Component
@@ -21,6 +23,9 @@ class UpdateAccount extends Component
     public $country_id;
     public $zip;
 
+    public $country;
+    public $timezone;
+
     public function rules(){
         return [
             'name' => 'required|string|max:255',
@@ -30,6 +35,7 @@ class UpdateAccount extends Component
             'city' => 'required|string|max:255',
             'state_id' => 'required|integer',
             'country_id' => 'required|integer',
+            'timezone' => 'required|string',
             'zip' => ['required', 'string', 'digits:5'],
         ];
     }
@@ -42,8 +48,26 @@ class UpdateAccount extends Component
         $this->city = auth()->user()->city;
         $this->state_id = auth()->user()->state_id;
         $this->country_id = auth()->user()->country_id;
+        $this->timezone = auth()->user()->timezone;
         $this->zip = auth()->user()->zip;
+
+        $this->country = Country::find($this->country_id);
+
     }
+    #[Computed]
+    public function updatedCountryId()
+    {
+        $this->country = Country::find($this->country_id);
+    }
+    #[Computed]
+    public function timezones()
+    {
+        return \DateTimeZone::listIdentifiers(
+            timezoneGroup: \DateTimeZone::PER_COUNTRY,
+            countryCode:  $this->country->code
+        );
+    }
+
 
     public function update()
     {
@@ -59,6 +83,7 @@ class UpdateAccount extends Component
             'city' => $this->city,
             'state_id' => $this->state_id,
             'country_id' => $this->country_id,
+            'timezone' => $this->timezone,
             'zip' => $this->zip,
         ]);
 

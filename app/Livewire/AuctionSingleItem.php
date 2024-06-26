@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Bid;
+use App\Models\Country;
 use App\Models\Item;
 use App\Models\Lot;
 use Livewire\Attributes\Computed;
@@ -40,8 +41,9 @@ class AuctionSingleItem extends Component
         return 'bg-gray-200';
     }
 
+
     public function bidingTime(){
-        $current_time = \Carbon\Carbon::now('America/Chicago');
+        $current_time = \Carbon\Carbon::now()->inUserTimezone();
 
         //Check if lot is live
         $lot = Lot::find($this->lotId);
@@ -50,29 +52,24 @@ class AuctionSingleItem extends Component
         }
         //Check if biding is open
         $item = Item::find($this->itemId);
+
         // Convert strings to time format using Carbon
-        $start_time = \Carbon\Carbon::createFromFormat('H:i:s', $item->start_time, 'UTC')->setTimezone('America/Chicago');
-        $end_time = \Carbon\Carbon::createFromFormat('H:i:s', $item->end_time, 'UTC')->setTimezone('America/Chicago');
+        $start_time = \Carbon\Carbon::parse($item->start_time)->inUserTimezone();
+        $end_time = \Carbon\Carbon::parse($item->end_time)->inUserTimezone();
 
-        dd($current_time, $start_time, $end_time);
+        $this->bidTime = $current_time->greaterThanOrEqualTo($start_time) && $current_time->lessThanOrEqualTo($end_time);
 
-        dd($current_time->between($start_time, $end_time));
-
-
-        $this->bidTime = $item->start_time <= now() && now() <= $item->end_time;
-
-        dd($this->bidTime);
     }
 
 
     public function customBid()
     {
-//        $this->bidingTime();
-//
-//        if(!$this->bidTime){
-//            session()->flash('error', 'Bidding is closed!');
-//            return;
-//        }
+        $this->bidingTime();
+
+        if(!$this->bidTime){
+            session()->flash('error', 'Bidding is closed!');
+            return;
+        }
         $this->validate([
             'bidAmount' => 'required|numeric'
         ]);

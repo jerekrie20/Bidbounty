@@ -27,6 +27,7 @@ with(fn() => [
             $query->where('title', 'like', '%' . $this->search . '%')
                 ->orWhere('description', 'like', '%' . $this->search . '%');
         })
+        ->where('status', '!=', 'closed')
         ->when($this->status, fn($query) => $query->where('status', $this->status))
         ->when($this->category, fn($query) => $query->whereHas('categories', fn($q) => $q->whereIn('id', $this->category)))
         ->when($this->start_date, fn($query) => $query->where('start_date', '>=', $this->start_date))
@@ -52,7 +53,7 @@ $bgColor = computed(fn() => [
     <h1 class="mt-10 mb-4 text-4xl dark:text-emerald-100 font-bold text-gray-700 pb-4 pt-3 text-center">Auctions</h1>
 
     <!-- Search Form -->
-    <div class="flex justify-center sm:justify-between flex-wrap items-center xl:w-2/3 m-auto">
+    <div class="flex justify-between items-center xl:w-2/3 m-auto">
         <div class="p-4 font-semibold">
             <p class="text-3xl dark:text-lavender-purple font-bold text-gray-700 text-center">Filter: </p>
         </div>
@@ -74,7 +75,7 @@ $bgColor = computed(fn() => [
         </div>
     </div>
 
-    <div class="flex flex-wrap justify-center items-center xl:w-2/3 m-auto">
+    <div class="flex justify-center items-center xl:w-2/3 m-auto">
         <div class="p-4 font-semibold text-xl">
             <section>
                 <select name="status" id="status" wire:model.live="status"
@@ -83,7 +84,6 @@ $bgColor = computed(fn() => [
                     <option value="upcoming">Upcoming</option>
                     <option value="live">Live</option>
                     <option value="pending">Pending</option>
-                    <option value="closed">Closed</option>
                 </select>
             </section>
         </div>
