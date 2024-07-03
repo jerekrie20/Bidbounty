@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Item;
 use App\Models\Lot;
 use App\Rules\TimeBetween;
+use Carbon\Carbon;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -97,8 +98,14 @@ class Listings extends Component
             $endTime = $selectedLot->end_date;
             $this->end_time = $endTime->format('H:i:s');
         }
-        $item->start_time = $this->start_time;
-        $item->end_time = $this->end_time;
+
+        // Convert user-set time into UTC
+        $userTimezone = auth()->user()->timezone; // Set this based on your authenticated user's timezone
+        $startTime = Carbon::createFromFormat('H:i', $this->start_time, $userTimezone)->setTimezone('UTC');
+        $endTime = Carbon::createFromFormat('H:i', $this->end_time, $userTimezone)->setTimezone('UTC');
+
+        $item->start_time = $startTime;
+        $item->end_time = $endTime;
         $item->status = $this->status;
         $item->lot_id = $this->selectedLot;
         $item->user_id = auth()->id();
@@ -127,8 +134,11 @@ class Listings extends Component
 
     public function update()
     {
+        logger('validating');
 
         $this->validate();
+
+        logger($this->itemId ?? 'no item id');
 
         $item = Item::query()
             ->where('user_id', auth()->id())
@@ -146,14 +156,20 @@ class Listings extends Component
             $this->images[] = $imageService->saveBulkImages($this->files, 'items', $subfolder, $item->images);
         }
 
+        // Convert user-set time into UTC
+        $userTimezone = auth()->user()->timezone; // Set this based on your authenticated user's timezone
+
+        $start_time = Carbon::createFromFormat('H:i', $this->start_time, $userTimezone)->setTimezone('UTC');
+        $end_time = Carbon::createFromFormat('H:i', $this->end_time, $userTimezone)->setTimezone('UTC');
+        // Save UTC times in database
         $item->update([
             'title' => $this->title,
             'description' => $this->description,
             'starting_bid' => $this->starting_bid,
             'current_bid' => $this->current_bid,
             'reserve_price' => $this->reserve_price,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
+            'start_time' => $start_time,
+            'end_time' => $end_time,
             'status' => $this->status,
         ]);
 
@@ -177,17 +193,17 @@ class Listings extends Component
 
         $item = Item::query()
             ->where('user_id', auth()->id())
+            ->where('id', $id)
             ->where('lot_id', $this->selectedLot)
             ->first();
-
 
         $this->title = $item->title;
         $this->description = $item->description;
         $this->starting_bid = $item->starting_bid;
         $this->current_bid = $item->current_bid;
         $this->reserve_price = $item->reserve_price;
-        $this->start_time = $item->start_time;
-        $this->end_time = $item->end_time;
+        $this->start_time = Carbon::parse($item->start_time)->inUserTimezone()->format('H:i');
+        $this->end_time = Carbon::parse($item->end_time)->inUserTimezone()->format('H:i');
         $this->status = $item->status;
         $this->images = $item->images;
         $this->itemId = $item->id;
@@ -222,9 +238,12 @@ class Listings extends Component
 
     public function submit(): void
     {
+        logger($this->mode);
+
         if ($this->mode == 'create') {
             $this->create();
         } else {
+            logger('updating');
             $this->update();
         }
     }

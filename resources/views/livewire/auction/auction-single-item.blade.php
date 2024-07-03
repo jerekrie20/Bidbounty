@@ -110,8 +110,9 @@
             <div class="w-full sm:w-1/2 flex flex-wrap">
                 @php
                     $images = json_decode($item->images);
-                       // Flatten the array
-                       $images = array_merge(...$images);
+                    if (is_array($images) && count($images) > 0 && is_array($images[0])) {
+                        $images = array_merge(...$images);
+                    }
                 @endphp
                 @foreach($images as $image)
                     <a href="{{ asset('items/' . $image) }}" data-lightbox="gallery"
@@ -125,7 +126,7 @@
             <div class="w-full sm:w-1/2">
                 <div class="flex justify-between bg-rust-orange font-semibold">
                     <p class="p-2 text-white">
-                        Start: Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('h:i A') }}</p>
+                        Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('h:i A') }}</p>
                     <p class="p-2 text-white">
                         End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('h:i A') }}</p>
                 </div>
@@ -156,20 +157,32 @@
                 <hr>
 
                 @auth()
-                    <div class="flex justify-center mb-4 mt-4">
+                    @php
+                        $start_time = \Carbon\Carbon::parse($item->start_time)->inUserTimezone();
+                        $end_time = \Carbon\Carbon::parse($item->end_time)->inUserTimezone();
+                        $now = now()->inUserTimezone();
+                        $isBidClose = $now < $start_time || $now > $end_time;
+                        $isLotLive = $lot->status != 'live';
 
-                        @if($lot->status != 'live')
+                        $buttonStyles = "py-2 px-6 rounded-xl text-cloud-white font-semibold hover:text-black";
+                        $mainButtonStyle = "$buttonStyles bg-rust-orange hover:bg-lavender-purple mr-3";
+                        $wishlistButtonStyle = "$buttonStyles bg-midnight-blue hover:bg-peach-pink";
+                    @endphp
+
+                    <div class="flex justify-center mb-4 mt-4">
+                        @if($isLotLive)
                             <p class="p-3 font-bold text-danger-red text-lg">Lot {{ $lot->status }}</p>
-                        @elseif($item->start_time > now() && $item->end_time < now())
+                        @elseif($isBidClose)
                             <p class="p-3 font-bold text-danger-red text-lg">Item Not live/Closed</p>
                         @elseif(!$showBidModal)
                             <button wire:click="$set('showBidModal', true)"
-                                    class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mr-3">
+                                    class="{{ $mainButtonStyle }}">
                                 Bid Now!
                             </button>
                         @endif
+
                         <button wire:click="wishlist"
-                                class="py-2 px-6 bg-midnight-blue rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-peach-pink">
+                                class="{{ $wishlistButtonStyle }}">
                             Wishlist
                         </button>
                     </div>
@@ -229,7 +242,7 @@
                             <div>
                                 <button wire:click="bid"
                                         class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mr-3">
-                                   Buy Now
+                                    Buy Now
                                 </button>
                             </div>
 
@@ -240,7 +253,8 @@
                                 <p class="font-semibold mb-2 mr-2">Custom Bid: </p>
                             </div>
                             <div class="mb-2">
-                                <input type="number" wire:model="bidAmount" class="w-24 h-10 border border-gray-300 rounded-md p-2">
+                                <input type="number" wire:model="bidAmount"
+                                       class="w-24 h-10 border border-gray-300 rounded-md p-2">
                             </div>
                             <div>
                                 <button wire:click="customBid"
@@ -262,7 +276,8 @@
                         @foreach($bids as $bid)
                             <div class="flex justify-between">
                                 <p class="font-semibold">Bidder: {{ $bid->user->name }}</p>
-                                <p class="font-semibold">Time: {{ \Carbon\Carbon::parse($item->created_at)->format('h:i A') }}</p>
+                                <p class="font-semibold">
+                                    Time: {{ \Carbon\Carbon::parse($item->created_at)->format('h:i A') }}</p>
                                 <p class="font-semibold">Bid: ${{ $bid->amount }}</p>
                             </div>
                         @endforeach

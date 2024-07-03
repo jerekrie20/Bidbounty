@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Str; @endphp
 <div>
     <div>
 
@@ -48,7 +49,13 @@
             @foreach ($data as $index => $item)
                 <tr class="{{ $index % 2 == 0 ? 'bg-gray-200' : 'bg-white' }}">
                     @foreach($columns as $column)
-                        <td class="px-6 py-4">{{ $item[$column['field']] }}</td>
+                        @php
+                         //If field is a time field, format it
+                            if($column['field'] === 'start_time' || $column['field'] === 'end_time') {
+                                $item[$column['field']] = \Carbon\Carbon::parse($item[$column['field']])->inUserTimezone()->format('h:i A');
+                            }
+                        @endphp
+                        <td class="px-6 py-4">{{ Str::limit($item[$column['field']], 100)  }}</td>
                     @endforeach
                     <td class="flex px-6 py-4">
                         <button wire:click="edit({{ $item['id'] }})"

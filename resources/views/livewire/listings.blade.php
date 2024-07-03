@@ -127,6 +127,12 @@
 
                 <div class="mb-3 flex justify-center">
                     <button wire:click="$set('showModal', true)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">Select Categories</button>
+                   <br>
+                    <p class="text-sm text-danger-red">
+                        @error('category')
+                        <span class="error">{{ $message }}</span>
+                        @enderror
+                    </p>
                 </div>
                 <div class="flex justify-center">
                     <x-forms.submit>Submit</x-forms.submit>
@@ -147,6 +153,7 @@
                     </div>
                 </div>
                 @endif
+
 
             </x-livewire.forms.form>
         @else

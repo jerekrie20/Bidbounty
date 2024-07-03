@@ -158,35 +158,54 @@ class Lots extends Component
         ]);
         // Sync categories
         $lot->categories()->sync($this->category);
+        // Add Job to update the status of the lot
+        $timezone = auth()->user()->timezone;
 
-        //Add Job to update the status of the lot
-        $auctionStartDateTime = $lot->start_date;
-        $auctionEndDateTime = $lot->end_date;
-//        Log::info("Start delay: " . $auctionStartDateTime->diffInSeconds(now()));
-//        Log::info("End delay: " . $auctionEndDateTime->diffInSeconds(now()));
+        // Fetching the start_date and end_date as strings first
+        $startDateString = $this->start_date;
+        $endDateString = $this->end_date;
 
-        $startDelay = $auctionStartDateTime->diffInSeconds(now());
-        $endDelay = $auctionEndDateTime->diffInSeconds(now());
+        Log::info('Form Start Date: ' . $startDateString);
+        Log::info('Form End Date: ' . $endDateString);
 
-        // if the start time is in the past or less than 5 minutes from now
-        if ($auctionStartDateTime < now() || $startDelay < 5 * 60) {
-            // handle this case, either dispatch immediately, log an error, etc.
-            UpdateLotStatus::dispatch($lot);
+        // Correctly interpret the datetime strings with the correct timezone
+        $auctionStartDateTime = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $startDateString, $timezone);
+        $auctionEndDateTime = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $endDateString, $timezone);
+
+        $currentTime = now()->setTimezone($timezone);
+        $adjustedNow = $currentTime->copy()->startOfMinute();
+
+        Log::info('Auction Start DateTime: ' . $auctionStartDateTime . ' Timezone: ' . $auctionStartDateTime->timezone);
+        Log::info('Current Time: ' . $currentTime . ' Timezone: ' . $currentTime->timezone);
+        Log::info('Adjusted Now: ' . $adjustedNow . ' Timezone: ' . $adjustedNow->timezone);
+
+        // if the start time is in the future
+        if ($auctionStartDateTime->greaterThanOrEqualTo($adjustedNow)) {
+            UpdateLotStatus::dispatch($lot)->delay($auctionStartDateTime);
         } else {
-            UpdateLotStatus::dispatch($lot)->delay($startDelay);
+            // handle this case, either dispatch immediately, log an error, etc.
+            Log::error("The start time is in the past or now, dispatching UpdateLotStatus immediately.");
+//            dd($auctionStartDateTime, $adjustedNow);
+            UpdateLotStatus::dispatchSync($lot);
         }
 
-        // if the end time is in the past or less than 5 minutes from now
-        if ($auctionEndDateTime < now() || $startDelay < 5 * 60) {
-            // handle this case, either dispatch immediately, log an error, etc.
-            EndLotAuction::dispatch($lot);
+        // if the end time is in the future
+        if ($auctionEndDateTime->greaterThan($currentTime)) {
+            EndLotAuction::dispatch($lot)->delay($auctionEndDateTime);
         } else {
-            EndLotAuction::dispatch($lot)->delay($endDelay);
+            // handle this case, either dispatch immediately, log an error, etc.
+            EndLotAuction::dispatchSync($lot);
         }
 
         $this->resetFields();
         session()->flash('success', 'Updated successfully!');
     }
+
+
+
+
+
+
 
     //Delete a lot
     public function delete($lotId): void
