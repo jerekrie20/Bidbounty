@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ $title ?? 'BidBounty' }}</title>
     @vite('resources/css/app.css')
     @vite('node_modules/lightbox2/dist/css/lightbox.min.css')
-    <title>{{ $title ?? 'BidBounty' }}</title>
-
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet"/>
@@ -249,8 +249,9 @@
 
 
 </script>
+@livewireScripts
 @vite('resources/js/app.js')
-@vite('node_modules/lightbox2/dist/js/lightbox.min.js')
+{{--@vite('node_modules/lightbox2/dist/js/lightbox.min.js')--}}
 
 </body>
 </html>

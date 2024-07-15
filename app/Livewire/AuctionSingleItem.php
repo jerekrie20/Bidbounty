@@ -6,29 +6,49 @@ use App\Models\Bid;
 use App\Models\Country;
 use App\Models\Item;
 use App\Models\Lot;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
+use App\Services\BidService;
 
 class AuctionSingleItem extends Component
 {
     public $itemId;
     public $lotId;
-
+    public $item;
+    public $lot;
     public $showModal = false;
     public $showBidModal = false;
-
     public $bidAmount;
 
     public $bidTime = false;
+    public $bids;
 
-    //reset bid amount
+    #[On('echo:development,BidPlaced')]
+    public function handleBidPlaced()
+    {
+        Log::info('BidPlaced event received');
+        $this->refreshBids();
+    }
+
+    public function refreshBids()
+    {
+        $this->bids = Bid::where('item_id', $this->itemId)
+            ->orderBy('created_at', 'desc') // Order by created_at to get the latest bids
+            ->limit(5)
+            ->get();
+    }
+
+
+    // Reset bid amount
     public function resetBidAmount()
     {
         $this->bidAmount = '';
     }
 
-    #[Computed]
+    // Set color for status
     public function bgColor($status)
     {
         if ($status == 'available') {
@@ -41,61 +61,63 @@ class AuctionSingleItem extends Component
         return 'bg-gray-200';
     }
 
-
-    public function bidingTime(){
-        $current_time = \Carbon\Carbon::now()->inUserTimezone();
-
-        //Check if lot is live
-        $lot = Lot::find($this->lotId);
-        if ($lot->status != 'live') {
-            $this->bidTime = false;
-        }
-        //Check if biding is open
-        $item = Item::find($this->itemId);
-
-        // Convert strings to time format using Carbon
-        $start_time = \Carbon\Carbon::parse($item->start_time)->inUserTimezone();
-        $end_time = \Carbon\Carbon::parse($item->end_time)->inUserTimezone();
-
-        $this->bidTime = $current_time->greaterThanOrEqualTo($start_time) && $current_time->lessThanOrEqualTo($end_time);
-
+    public function showBid()
+    {
+        $this->showBidModal = !$this->showBidModal;
     }
 
+    // Check if bidding is open
+    public function biddingTime()
+    {
+        $current_time = \Carbon\Carbon::now()->inUserTimezone();
+
+        // Check if lot is live
+        if ($this->lot->status != 'live') {
+            $this->bidTime = false;
+            return;
+        }
+
+        // Convert strings to time format using Carbon
+        $start_time = \Carbon\Carbon::parse($this->item->start_time)->inUserTimezone();
+        $end_time = \Carbon\Carbon::parse($this->item->end_time)->inUserTimezone();
+
+        $this->bidTime = $current_time->between($start_time, $end_time);
+    }
 
     public function customBid()
     {
-        $this->bidingTime();
+        $this->biddingTime();
 
-        if(!$this->bidTime){
+        if (!$this->bidTime) { // Check if bidding is open
             session()->flash('error', 'Bidding is closed!');
             return;
         }
+
         $this->validate([
             'bidAmount' => 'required|numeric'
         ]);
 
-        //check if bid amount is greater than current bid
+        // Check if bid amount is greater than current bid
         $currentBid = Bid::where('item_id', $this->itemId)->orderBy('amount', 'desc')->first();
 
         if ($currentBid && $this->bidAmount <= $currentBid->amount) {
-            //Clear Session
-            session()->forget('error');
             session()->flash('error', 'Bid amount must be greater than current bid!');
             $this->resetBidAmount();
             return;
         }
 
-        //save bid in bids table
-        Bid::create([
+        $bidData = [
             'item_id' => $this->itemId,
             'user_id' => auth()->id(),
             'amount' => $this->bidAmount
-        ]);
+        ];
+
+        app(BidService::class)->placeBid($bidData);
 
         session()->flash('success', 'Bid placed successfully!');
         $this->resetBidAmount();
-    }
 
+    }
 
     #[Layout('components.layouts.auction')]
     public function mount($lotId, $itemId)
@@ -103,14 +125,19 @@ class AuctionSingleItem extends Component
         $this->lotId = $lotId;
         $this->itemId = $itemId;
 
+        $this->item = Item::find($this->itemId);
+        $this->lot = Lot::find($this->lotId);
+        // Initialize the bids
+        $this->refreshBids();
     }
 
     public function render()
     {
+
         return view('livewire.auction.auction-single-item', [
-            'item' => Item::find($this->itemId),
-            'lot' => Lot::find($this->lotId),
-            'bids' => Bid::where('item_id', $this->itemId)->orderBy('amount', 'desc')->limit(5)->get(),
+            'item' => $this->item,
+            'lot' => $this->lot,
+            'bids' => $this->bids,
         ]);
     }
 }

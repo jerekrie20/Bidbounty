@@ -174,8 +174,8 @@
                             <p class="p-3 font-bold text-danger-red text-lg">Lot {{ $lot->status }}</p>
                         @elseif($isBidClose)
                             <p class="p-3 font-bold text-danger-red text-lg">Item Not live/Closed</p>
-                        @elseif(!$showBidModal)
-                            <button wire:click="$set('showBidModal', true)"
+                        @else
+                            <button wire:click="showBid"
                                     class="{{ $mainButtonStyle }}">
                                 Bid Now!
                             </button>
@@ -296,5 +296,6 @@
 
     </div>
 
+    @livewireScripts(['echo' => ['broadcaster' => 'pusher', 'key' => env('PUSHER_APP_KEY'), 'cluster' => env('PUSHER_APP_CLUSTER'), 'encrypted' => true]])
 
 </div>
