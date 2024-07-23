@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Jobs\InsertTransaction;
 use App\Jobs\UpdateItemStatus;
 use App\Models\Category;
 use App\Models\Item;
@@ -318,10 +319,17 @@ class Listings extends Component
         //If the end time is now or in the past, dispatch the job immediately
         if ($endTimeConvert->lessThanOrEqualTo($adjustedNow)) {
             Log::error("The end time is in the past or now, dispatching UpdateItemStatus immediately.");
-            UpdateItemStatus::dispatchSync($item);
+            UpdateItemStatus::withChain([
+                //Chain the job with another job
+                //This job will be dispatched immediately after the UpdateItemStatus job is completed
+                new InsertTransaction($item)
+            ])->dispatch($item);
+
         }else {
             //If the end time is in the future, dispatch the job with a delay
-            UpdateItemStatus::dispatch($item)->delay($endTimeConvert);
+            UpdateItemStatus::dispatch($item)->delay($endTimeConvert)->chain([
+                new InsertTransaction($item)
+            ]);
         }
     }
 

@@ -85,6 +85,14 @@ class User extends Authenticatable
     }
 
     /**
+     * User can have many bids
+     */
+    public function bids() : HasMany
+    {
+        return $this->hasMany(Bid::class);
+    }
+
+    /**
      * Get the transactions where the user is a buyer.
      */
     public function purchases() : HasMany
