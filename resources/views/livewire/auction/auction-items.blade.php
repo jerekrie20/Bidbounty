@@ -108,13 +108,13 @@
         <div class="p-4 font-semibold text-xl">
             <!-- date -->
             <label for="start_date" class="text-white">Start Time:</label>
-            <input type="time" name="start_time" wire:model.live.debounce.500ms="start_time"
+            <input type="datetime-local" name="start_time" wire:model.live.debounce.500ms="start_time"
                    class="text-rust-orange caret-rust-orange  rounded-lg">
         </div>
         <div class="p-4 font-semibold text-xl">
             <!-- date -->
             <label for="end_date" class="text-white">End Time:</label>
-            <input type="time" name="end_time" wire:model.live.debounce.500ms="end_time"
+            <input type="datetime-local" name="end_time" wire:model.live.debounce.500ms="end_time"
                    class="text-rust-orange caret-rust-orange  rounded-lg">
         </div>
     </div>

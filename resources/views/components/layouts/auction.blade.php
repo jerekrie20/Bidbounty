@@ -58,7 +58,7 @@
             <x-icons.dots-vertical></x-icons.dots-vertical>
             <x-menus.nav-items name="Bids" href="/bids"></x-menus.nav-items>
             <x-icons.dots-vertical></x-icons.dots-vertical>
-            <x-menus.nav-items name="Wishlist" href="/wishlist"></x-menus.nav-items>
+            <x-menus.nav-items name="Wishlist" href="/watchlist"></x-menus.nav-items>
             <x-icons.dots-vertical></x-icons.dots-vertical>
             <x-menus.nav-items name="Messages" href="/message"></x-menus.nav-items>
             <x-icons.dots-vertical></x-icons.dots-vertical>

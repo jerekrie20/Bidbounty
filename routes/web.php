@@ -33,5 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('account',[UserController::class, 'account'])->name('account');
     Route::get('/userLots',[LotController::class, 'index'])->name('lots');
     Route::get('/listings',[ItemController::class, 'index'])->name('listings');
+    Volt::route('/watchlist', 'user.watch-lists')->name('watchlist');
+
 //    Route::put('user/{user}/account',[UserController::class, 'updateAccount'])->name('user.account');
 });

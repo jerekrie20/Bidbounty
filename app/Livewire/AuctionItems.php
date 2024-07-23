@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Lot;
+use Carbon\Carbon;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -65,7 +66,7 @@ class AuctionItems extends Component
 
     public function resetFilters()
     {
-        $this->reset(['search', 'status', 'start_time', 'end_time']);
+        $this->reset(['search', 'status', 'start_time', 'end_time','perPage','category']);
     }
 
 
@@ -82,10 +83,10 @@ class AuctionItems extends Component
                     $query->where('status', $this->status);
                 })
                 ->when($this->start_time, function ($query) {
-                    $query->where('start_time', '>=', $this->start_time);
+                    $query->where('start_time', '>=', Carbon::createFromFormat('Y-m-d\TH:i', $this->start_time));
                 })
                 ->when($this->end_time, function ($query) {
-                    $query->where('end_time', '<=', $this->end_time);
+                    $query->where('end_time', '<=', Carbon::createFromFormat('Y-m-d\TH:i', $this->end_time));
                 })
                 ->when($this->category, function ($query) {
                     $query->whereHas('categories', function ($query) {
