@@ -108,6 +108,10 @@ class Lots extends Component
         //add category to pivot table
         $lot->categories()->attach($this->category);
 
+        // Dispatch the job
+        $this->jobDispatch($lot);
+
+
         $this->resetFields();
         session()->flash('success', 'Created successfully');
     }
@@ -158,6 +162,17 @@ class Lots extends Component
         ]);
         // Sync categories
         $lot->categories()->sync($this->category);
+
+        //Dispatch the job
+        $this->jobDispatch($lot);
+
+        $this->resetFields();
+        session()->flash('success', 'Updated successfully!');
+    }
+
+    public function jobDispatch($lot): void
+    {
+        //Dispatch the job
         // Add Job to update the status of the lot
         $timezone = auth()->user()->timezone;
 
@@ -196,14 +211,7 @@ class Lots extends Component
             // handle this case, either dispatch immediately, log an error, etc.
             EndLotAuction::dispatchSync($lot);
         }
-
-        $this->resetFields();
-        session()->flash('success', 'Updated successfully!');
     }
-
-
-
-
 
 
 

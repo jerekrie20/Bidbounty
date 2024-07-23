@@ -2,31 +2,27 @@
 
 namespace App\Events;
 
-use App\Models\Bid;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
-class BidPlaced implements ShouldBroadcast , ShouldDispatchAfterCommit
+class ItemStatusUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $bid;
+    public $item;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Bid $bid)
+    public function __construct($item)
     {
-       $this->bid = $bid;
+        $this->item = $item;
     }
-
 
     /**
      * Get the channels the event should broadcast on.
@@ -37,5 +33,4 @@ class BidPlaced implements ShouldBroadcast , ShouldDispatchAfterCommit
     {
         return new Channel('development');
     }
-
 }

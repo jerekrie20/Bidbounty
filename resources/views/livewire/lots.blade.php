@@ -211,8 +211,8 @@
                     </td>
                     <td class="px-6 py-4">{{ $lot->title }}</td>
                     <td class="px-6 py-4">{{ \Illuminate\Support\Str::limit($lot->description, 100) }}</td>
-                    <td class="px-6 py-4">{{ \Carbon\Carbon::parse($lot->start_date)->format('Y-m-d h:i A') }}</td>
-                    <td class="px-6 py-4">{{ \Carbon\Carbon::parse($lot->end_date)->format('Y-m-d h:i A') }}</td>
+                    <td class="px-6 py-4">{{ \Carbon\Carbon::parse($lot->start_date)->inUserTimezone()->format('Y-m-d h:i A') }}</td>
+                    <td class="px-6 py-4">{{ \Carbon\Carbon::parse($lot->end_date)->inUserTimezone()->format('Y-m-d h:i A') }}</td>
                     <td class="px-6 py-4">
         <span class="text-lg pl-2 pr-2 pt-4 pb-4 {{
                     $lot->status == 'upcoming' ? 'bg-blue-200 text-blue-800' :

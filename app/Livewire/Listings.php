@@ -2,11 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Jobs\UpdateItemStatus;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Lot;
+use App\Rules\DateTimeBetween;
 use App\Rules\TimeBetween;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -53,6 +56,18 @@ class Listings extends Component
     public function rules()
     {
         $selectedLot = Lot::find($this->selectedLot);
+        $selectedLotStartDate = $selectedLot->start_date;
+        $selectedLotEndDate = $selectedLot->end_date;
+
+        $userStartTime = Carbon::createFromFormat('Y-m-d\TH:i', $this->start_time, 'UTC');
+        $userEndTime = Carbon::createFromFormat('Y-m-d\TH:i', $this->end_time, 'UTC');
+
+        Log::info('Selected Lot Start Date: ' . $selectedLotStartDate);
+        Log::info('Selected Lot End Date: ' . $selectedLotEndDate);
+
+        Log::info('start_time: ' . $userStartTime);
+        Log::info('end_time: ' . $userEndTime);
+
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:500',
@@ -62,13 +77,13 @@ class Listings extends Component
             'category.*' => Rule::exists('categories', 'id'),
             'start_time' => [
                 'nullable',
-                'date_format:H:i',
-                new TimeBetween($selectedLot->start_date, $selectedLot->end_date)
+                'date_format:Y-m-d\TH:i',
+                new DateTimeBetween($selectedLotStartDate, $selectedLotEndDate)
             ],
             'end_time' => [
                 'nullable',
-                'date_format:H:i',
-                new TimeBetween($selectedLot->start_date, $selectedLot->end_date)
+                'date_format:Y-m-d\TH:i',
+                new DateTimeBetween($selectedLotStartDate, $selectedLotEndDate)
             ],
             'status' => 'required|string',
             'files.*' => 'sometimes|image|max:1024',
@@ -92,17 +107,17 @@ class Listings extends Component
         //if start time and end time are empty, extract times from selected lot
         if (empty($this->start_time)) {
             $startTime = $selectedLot->start_date;
-            $this->start_time = $startTime->format('H:i:s');
+            $this->start_time = $selectedLot->start_date;
         }
         if (empty($this->end_time)) {
             $endTime = $selectedLot->end_date;
-            $this->end_time = $endTime->format('H:i:s');
+            $this->end_time = $selectedLot->end_date;
         }
 
         // Convert user-set time into UTC
         $userTimezone = auth()->user()->timezone; // Set this based on your authenticated user's timezone
-        $startTime = Carbon::createFromFormat('H:i', $this->start_time, $userTimezone)->setTimezone('UTC');
-        $endTime = Carbon::createFromFormat('H:i', $this->end_time, $userTimezone)->setTimezone('UTC');
+        $startTime = Carbon::createFromFormat('Y-m-d\TH:i', $this->start_time, $userTimezone)->setTimezone('UTC');
+        $endTime = Carbon::createFromFormat('Y-m-d\TH:i', $this->end_time, $userTimezone)->setTimezone('UTC');
 
         $item->start_time = $startTime;
         $item->end_time = $endTime;
@@ -125,6 +140,9 @@ class Listings extends Component
         }
 
         $item->categories()->attach($this->category);
+
+        //Dispatch the job
+        $this->jobDispatch($item);
 
         $this->resetFields();
 
@@ -159,8 +177,8 @@ class Listings extends Component
         // Convert user-set time into UTC
         $userTimezone = auth()->user()->timezone; // Set this based on your authenticated user's timezone
 
-        $start_time = Carbon::createFromFormat('H:i', $this->start_time, $userTimezone)->setTimezone('UTC');
-        $end_time = Carbon::createFromFormat('H:i', $this->end_time, $userTimezone)->setTimezone('UTC');
+        $start_time = Carbon::createFromFormat('Y-m-d\TH:i', $this->start_time, $userTimezone)->setTimezone('UTC');
+        $end_time = Carbon::createFromFormat('Y-m-d\TH:i', $this->end_time, $userTimezone)->setTimezone('UTC');
         // Save UTC times in database
         $item->update([
             'title' => $this->title,
@@ -181,11 +199,15 @@ class Listings extends Component
 
         $item->categories()->sync($this->category);
 
+        //Dispatch the job
+        $this->jobDispatch($item);
+
         $this->resetFields();
 
         session()->flash('message', 'Item updated successfully');
 
     }
+
     #[On('edit')]
     public function edit($id): void
     {
@@ -202,8 +224,8 @@ class Listings extends Component
         $this->starting_bid = $item->starting_bid;
         $this->current_bid = $item->current_bid;
         $this->reserve_price = $item->reserve_price;
-        $this->start_time = Carbon::parse($item->start_time)->inUserTimezone()->format('H:i');
-        $this->end_time = Carbon::parse($item->end_time)->inUserTimezone()->format('H:i');
+        $this->start_time = Carbon::parse($item->start_time)->inUserTimezone()->format('Y-m-d\TH:i');
+        $this->end_time = Carbon::parse($item->end_time)->inUserTimezone()->format('Y-m-d\TH:i');
         $this->status = $item->status;
         $this->images = $item->images;
         $this->itemId = $item->id;
@@ -218,6 +240,7 @@ class Listings extends Component
 
         $this->mode = 'edit';
     }
+
     #[On('delete')]
     public function delete($itemId): void
     {
@@ -248,7 +271,7 @@ class Listings extends Component
         }
     }
 
-    private function resetFields()
+    private function resetFields(): void
     {
         $this->title = '';
         $this->description = '';
@@ -272,6 +295,34 @@ class Listings extends Component
         }
 
         return true;
+    }
+
+    public function jobDispatch($item) : void
+    {
+        //Get the Timezone of the authenticated user
+        $userTimezone = auth()->user()->timezone;
+
+        //Fetch the end time of the item.
+        $endTime = $this->end_time;
+        Log::info('End Time: ' . $endTime);
+
+        //Reformat the end time to the user's timezone
+        $endTimeConvert = Carbon::createFromFormat('Y-m-d\TH:i', $endTime, $userTimezone);
+        $currentTime = now()->setTimezone($userTimezone);
+        $adjustedNow = $currentTime->copy()->startOfMinute();
+
+        Log::info('End Time Converted: ' . $endTimeConvert);
+        Log::info('Current Time: ' . $currentTime);
+        Log::info('Adjusted Now: ' . $adjustedNow);
+
+        //If the end time is now or in the past, dispatch the job immediately
+        if ($endTimeConvert->lessThanOrEqualTo($adjustedNow)) {
+            Log::error("The end time is in the past or now, dispatching UpdateItemStatus immediately.");
+            UpdateItemStatus::dispatchSync($item);
+        }else {
+            //If the end time is in the future, dispatch the job with a delay
+            UpdateItemStatus::dispatch($item)->delay($endTimeConvert);
+        }
     }
 
 

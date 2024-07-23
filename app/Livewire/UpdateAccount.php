@@ -62,6 +62,9 @@ class UpdateAccount extends Component
     #[Computed]
     public function timezones()
     {
+        if(!$this->country){
+            return [];
+        }
         return \DateTimeZone::listIdentifiers(
             timezoneGroup: \DateTimeZone::PER_COUNTRY,
             countryCode:  $this->country->code

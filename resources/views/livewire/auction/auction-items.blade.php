@@ -217,9 +217,9 @@
                         </div>
                         <div class="flex justify-between bg-rust-orange font-semibold">
                             <p class="p-2 text-white">
-                                Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('h:i A') }}</p>
+                                Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
                             <p class="p-2 text-white">
-                                End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('h:i A') }}</p>
+                                End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
                         </div>
 
                         <div class="flex justify-center mt-2">

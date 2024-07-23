@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\Item;
 use App\Models\Lot;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -20,18 +21,30 @@ class AuctionSingleItem extends Component
     public $item;
     public $lot;
     public $showModal = false;
-    public $showBidModal = false;
     public $bidAmount;
 
     public $bidTime = false;
     public $bids;
 
+    //Events
     #[On('echo:development,BidPlaced')]
     public function handleBidPlaced()
     {
         Log::info('BidPlaced event received');
         $this->refreshBids();
     }
+
+    //Listen for the event
+    #[On('echo:development,ItemStatusUpdated')]
+    public function handleItemStatusUpdated()
+    {
+        Log::info('ItemStatusUpdated event received');
+        session()->flash('notice', 'Item status updated!');
+        // Refresh the item
+    }
+
+
+    //End Events
 
     public function refreshBids()
     {
@@ -61,13 +74,8 @@ class AuctionSingleItem extends Component
         return 'bg-gray-200';
     }
 
-    public function showBid()
-    {
-        $this->showBidModal = !$this->showBidModal;
-    }
-
     // Check if bidding is open
-    public function biddingTime()
+    public function biddingTime(): void
     {
         $current_time = \Carbon\Carbon::now()->inUserTimezone();
 
@@ -77,11 +85,19 @@ class AuctionSingleItem extends Component
             return;
         }
 
+        if($this->item->status == 'pending' || $this->item->status == 'sold') {
+            $this->bidTime = false;
+            return;
+        }
+
         // Convert strings to time format using Carbon
         $start_time = \Carbon\Carbon::parse($this->item->start_time)->inUserTimezone();
         $end_time = \Carbon\Carbon::parse($this->item->end_time)->inUserTimezone();
 
+//        dd($current_time, $start_time, $end_time);
+
         $this->bidTime = $current_time->between($start_time, $end_time);
+
     }
 
     public function customBid()
@@ -94,7 +110,7 @@ class AuctionSingleItem extends Component
         }
 
         $this->validate([
-            'bidAmount' => 'required|numeric'
+            'bidAmount' => ['required', 'numeric', 'gte:' . $this->item->starting_bid],
         ]);
 
         // Check if bid amount is greater than current bid
@@ -116,6 +132,52 @@ class AuctionSingleItem extends Component
 
         session()->flash('success', 'Bid placed successfully!');
         $this->resetBidAmount();
+
+    }
+
+    #[On('buyNow')]
+    public function buyNow()
+    {
+        $this->biddingTime();
+
+        if (!$this->bidTime) { // Check if bidding is open
+            session()->flash('error', 'Bidding is closed!');
+            return;
+        }
+
+        $bidData = [
+            'item_id' => $this->itemId,
+            'user_id' => auth()->id(),
+            'amount' => $this->item->reserve_price
+        ];
+
+        app(BidService::class)->placeBid($bidData);
+
+        // Update the item status to pending
+        $this->item->update(['status' => 'pending']);
+
+        session()->flash('success', 'Bid placed successfully!');
+    }
+
+    #[On('bidNow')]
+    public function bidNow()
+    {
+        $this->biddingTime();
+
+        if (!$this->bidTime) { // Check if bidding is open
+            session()->flash('error', 'Bidding is closed!');
+            return;
+        }
+
+        $bidData = [
+            'item_id' => $this->itemId,
+            'user_id' => auth()->id(),
+            'amount' => $this->item->current_bid + 100
+        ];
+
+        app(BidService::class)->placeBid($bidData);
+
+        session()->flash('success', 'Bid placed successfully!');
 
     }
 

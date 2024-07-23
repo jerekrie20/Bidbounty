@@ -50,18 +50,15 @@
                 </div>
                 <div class="mb-4 flex justify-center">
                     <div class="mr-2 w-full">
-                        <p class="text-xl text-gray-600">Start Date: <span class="text-wheat-yellow text-xs">Display Only</span>
-                        </p>
-                        <p class="bg-gray-100 border-2 w-full p-4 rounded-lg"> {{ \Carbon\Carbon::parse($singleLot->start_date)->format('Y-m-d h:i A') }}</p>
+                        <p class="text-xl text-gray-600">Start Date: <span class="text-wheat-yellow text-xs">Display Only</span></p>
+                        <p class="bg-gray-100 border-2 w-full p-4 rounded-lg">{{ \Carbon\Carbon::parse($singleLot->start_date)->format('Y-m-d h:i A') }}</p>
                     </div>
                     <div class="mr-2 w-full">
-                        <p class="text-xl text-gray-600">End Date: <span
-                                class="text-wheat-yellow text-xs">Display Only</span></p>
+                        <p class="text-xl text-gray-600">End Date: <span class="text-wheat-yellow text-xs">Display Only</span></p>
                         <p class="bg-gray-100 border-2 w-full p-4 rounded-lg">{{ \Carbon\Carbon::parse($singleLot->end_date)->format('Y-m-d h:i A') }}</p>
                     </div>
-                    <x-livewire.forms.input name="start_time" :required="false" input="time"/>
-                    <x-livewire.forms.input name="end_time" :required="false" input="time"/>
-
+                    <x-livewire.forms.input name="start_time" :required="false" input="datetime-local"/>
+                    <x-livewire.forms.input name="end_time" :required="false" input="datetime-local"/>
                 </div>
 
                 <div>

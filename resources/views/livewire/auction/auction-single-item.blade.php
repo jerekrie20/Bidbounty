@@ -126,9 +126,9 @@
             <div class="w-full sm:w-1/2">
                 <div class="flex justify-between bg-rust-orange font-semibold">
                     <p class="p-2 text-white">
-                        Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('h:i A') }}</p>
+                        Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
                     <p class="p-2 text-white">
-                        End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('h:i A') }}</p>
+                        End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
                 </div>
 
                 <div class="flex justify-between mt-2">
@@ -145,11 +145,20 @@
 
                 <div class='p-4 text-center'>
                     <h2 class='text-2xl font-bold text-gray-800'>{{ $item->title }}</h2>
+                    @if(Session::has('notice'))
+                        <div x-data="{ show: true }"
+                             x-init="setTimeout(() => show = false, 3000)"
+                             x-show="show"
+                             class="text-lg text-green-500 text-center" id="success">
+                            {{ Session::get('notice') }}
+                        </div>
+                    @endif
+
                     <p class='mt-2 text-gray-600'>{{ $item->description }}</p>
                 </div>
 
                 <div class="flex justify-center">
-                    <p class="p-2 text-lg text-black font-bold">Starting Bid: ${{$item->starting_bid}}</p>
+                    <p class="p-2 text-lg text-black font-bold">Start Bid: ${{$item->starting_bid}}</p>
                     <p class="p-2 text-lg text-black font-bold">Current Bid: ${{$item->current_bid}}</p>
                     <p class="p-2 text-lg text-black font-bold">Buy Now Price: ${{$item->reserve_price}}</p>
                 </div>
@@ -174,11 +183,6 @@
                             <p class="p-3 font-bold text-danger-red text-lg">Lot {{ $lot->status }}</p>
                         @elseif($isBidClose)
                             <p class="p-3 font-bold text-danger-red text-lg">Item Not live/Closed</p>
-                        @else
-                            <button wire:click="showBid"
-                                    class="{{ $mainButtonStyle }}">
-                                Bid Now!
-                            </button>
                         @endif
 
                         <button wire:click="wishlist"
@@ -199,13 +203,17 @@
 
         </div>
 
-        @if($showBidModal)
-            <div wire:transition.out.opacity.duration.200ms class="p-10 ">
+
+            <div class="p-10 ">
                 <div class="bg-cloud-white w-full rounded-lg shadow-lg p-8">
+                    @auth()
                     <h2 class="text-xl font-semibold mb-4">Bid Now</h2>
                     <hr>
                     <x-theme.success/>
                     <x-theme.error/>
+                       <p class="text-center">
+                           @error('bidAmount') <span class="text-red-500">{{ $message }}</span> @enderror
+                       </p>
                     <hr>
                     <div class="flex justify-around mb-3">
                         <div>
@@ -223,7 +231,7 @@
                             </div>
 
                             <div>
-                                <button wire:click="bid"
+                                <button wire:click="bidNow"
                                         class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mr-3">
                                     Bid Now
                                 </button>
@@ -240,7 +248,7 @@
                             </div>
 
                             <div>
-                                <button wire:click="bid"
+                                <button wire:click="buyNow"
                                         class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mr-3">
                                     Buy Now
                                 </button>
@@ -255,6 +263,7 @@
                             <div class="mb-2">
                                 <input type="number" wire:model="bidAmount"
                                        class="w-24 h-10 border border-gray-300 rounded-md p-2">
+
                             </div>
                             <div>
                                 <button wire:click="customBid"
@@ -267,31 +276,37 @@
                         </div>
 
                     </div>
+                    @endauth
+                    @guest()
+                        <div class="flex justify-center mb-4 mt-4">
+                            <a href="{{ route('login') }}"
+                               class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mr-3">Login
+                                to Bid</a>
+                        </div>
+                    @endguest
 
                     <hr>
 
                     <h2 class="text-xl font-semibold mb-4 mt-5">Live Bid</h2>
 
-                    <div>
-                        @foreach($bids as $bid)
-                            <div class="flex justify-between">
-                                <p class="font-semibold">Bidder: {{ $bid->user->name }}</p>
-                                <p class="font-semibold">
-                                    Time: {{ \Carbon\Carbon::parse($item->created_at)->format('h:i A') }}</p>
-                                <p class="font-semibold">Bid: ${{ $bid->amount }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <div class="flex justify-end mt-4">
-                        <button wire:click.stop="$set('showBidModal', false)"
-                                class="px-4 py-2 rounded mr-2 text-white bg-blue-500 hover:bg-blue-600">Exit
-                        </button>
-                    </div>
+                        <div>
+                            @foreach($bids as $bid)
+                                @php
+                                    $status = $item->status;
+                                    $green = 'bg-green-500';
+                                    $backgroundColor = ($status === 'pending' && $loop->first) ? $green : '';
+                                @endphp
+                                <div class="flex justify-between {{ $backgroundColor }}">
+                                    <p class="font-semibold">Bidder: {{ $bid->user->name }}</p>
+                                    <p class="font-semibold">
+                                        Time: {{ \Carbon\Carbon::parse($bid->created_at)->inUserTimezone()->format('h:i A') }}</p>
+                                    <p class="font-semibold">Bid: ${{ $bid->amount }}</p>
+                                </div>
+                            @endforeach
+                        </div>
 
                 </div>
             </div>
-        @endif
 
 
     </div>
