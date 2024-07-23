@@ -77,6 +77,14 @@ class User extends Authenticatable
     }
 
     /**
+     * User can have many watchlists
+     */
+    public function watchlists() : HasMany
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
      * Get the transactions where the user is a buyer.
      */
     public function purchases() : HasMany
@@ -114,10 +122,6 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
 
-    //watchlist
-    public function watchlist()
-    {
-        return $this->belongsToMany(Item::class, 'watchlists');
-    }
+
 
 }

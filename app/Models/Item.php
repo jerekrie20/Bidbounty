@@ -57,9 +57,9 @@ class Item extends Model
     }
 
     //watchlist relationship
-    public function watchedBy() : BelongsToMany
+    public function watchlists() : HasMany
     {
-        return $this->belongsToMany(User::class, 'watchlists');
+        return $this->hasMany(WatchList::class);
     }
 
 }

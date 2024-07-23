@@ -185,10 +185,17 @@
                             <p class="p-3 font-bold text-danger-red text-lg">Item Not live/Closed</p>
                         @endif
 
+                        @if($wish)
+                            <button wire:click="removeWishlist"
+                                    class="{{ $wishlistButtonStyle }}">
+                                Remove From Wishlist
+                            </button>
+                        @else
                         <button wire:click="wishlist"
                                 class="{{ $wishlistButtonStyle }}">
-                            Wishlist
+                            Add To Wishlist
                         </button>
+                        @endif
                     </div>
                 @endauth
                 @guest()

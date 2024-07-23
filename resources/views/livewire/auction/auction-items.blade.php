@@ -217,12 +217,19 @@
                         </div>
                         <div class="flex justify-between bg-rust-orange font-semibold">
                             <p class="p-2 text-white">
-                                Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
+                                Start Date: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('Y-m-d') }}</p>
                             <p class="p-2 text-white">
-                                End: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
+                                End Date: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('Y-m-d') }}</p>
                         </div>
 
-                        <div class="flex justify-center mt-2">
+                        <div class="flex justify-between bg-rust-orange font-semibold">
+                            <p class="p-2 text-white">
+                                Start Time: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('g:i A') }}</p>
+                            <p class="p-2 text-white">
+                                End Time: {{ \Carbon\Carbon::parse($item->end_time)->inUserTimezone()->format('g:i A') }}</p>
+                        </div>
+
+                        <div class="flex justify-center flex-wrap mt-2">
                             @foreach($item->categories as $category)
                                 <p class="p-1">{{ $category->name }}</p><i
                                         class="p-2 fa-solid fa-ellipsis-vertical fa-beat text-midnight-blue"></i>
@@ -231,7 +238,7 @@
 
                         <div class='p-4 text-center'>
                             <h2 class='text-2xl font-bold text-gray-800'>{{ $item->title }}</h2>
-                            <p class='mt-2 text-gray-600'>{{ $item->description }}</p>
+                            <p class='mt-2 text-gray-600'>{{ \Illuminate\Support\Str::limit($item->description, 200) }}</p>
                         </div>
 
 

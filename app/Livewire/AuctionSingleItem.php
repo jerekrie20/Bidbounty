@@ -25,6 +25,7 @@ class AuctionSingleItem extends Component
 
     public $bidTime = false;
     public $bids;
+    public $wish = false;
 
     //Events
     #[On('echo:development,BidPlaced')]
@@ -181,14 +182,35 @@ class AuctionSingleItem extends Component
 
     }
 
+    #[On('wishlist')]
+    public function wishlist() // Add item to wishlist
+    {
+        $item = Item::find($this->itemId);
+        $item->watchlists()->create([
+            'user_id' => auth()->id(),
+            'item_id' => $this->itemId
+        ]);
+        $this->wish = true;
+        session()->flash('success', 'Item added to wishlist!');
+    }
+    #[On('removeWishlist')]
+    public function removeWishlist() // Remove item from wishlist
+    {
+        $item = Item::find($this->itemId);
+        $item->watchlists()->where('user_id', auth()->id())->delete();
+        $this->wish = false;
+        session()->flash('success', 'Item removed from wishlist!');
+    }
+
     #[Layout('components.layouts.auction')]
     public function mount($lotId, $itemId)
     {
         $this->lotId = $lotId;
         $this->itemId = $itemId;
-
         $this->item = Item::find($this->itemId);
         $this->lot = Lot::find($this->lotId);
+        // Check if item is in wishlist
+        $this->wish = $this->item->watchlists()->where('user_id', auth()->id())->exists();
         // Initialize the bids
         $this->refreshBids();
     }
