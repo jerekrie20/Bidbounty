@@ -73,7 +73,7 @@ class AuctionItems extends Component
     public function render()
     {
         return view('livewire.auction.auction-items', [
-            'auctionItems' => Item::where('lot_id', $this->lotId)
+            'auctionItems' => Item::with('watchlists', 'categories')->where('lot_id', $this->lotId)
                 ->where(function ($query) {
                     $query->where('title', 'like', '%' . $this->search . '%')
                         ->orWhere('description', 'like', '%' . $this->search . '%');

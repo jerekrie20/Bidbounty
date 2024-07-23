@@ -2,14 +2,14 @@
 <div x-data="{ show: @entangle('show') }">
 
     <div class="w-1/2 m-auto flex flex-wrap justify-around mt-2">
-        <p class="bg-peach-pink p-3 font-semibold  rounded-lg">Lot: {{$lot['title']}}</p>
-        <p class="bg-blue-500 p-3 font-semibold  rounded-lg">Status: {{$lot['status']}}</p>
-        <p class="bg-green-500 p-3 font-semibold  rounded-lg">Start
+        <p class="bg-peach-pink p-3 font-semibold rounded-lg sm:mb-2 sm:mr-2 m-0">Lot: {{$lot['title']}}</p>
+        <p class="bg-blue-500 p-3 font-semibold rounded-lg sm:mb-2 sm:mr-2 m-0">Status: {{$lot['status']}}</p>
+        <p class="bg-green-500 p-3 font-semibold rounded-lg sm:mb-2 sm:mr-2 m-0">Start
             Date: {{ \Carbon\Carbon::parse($lot['start_date'])->format('Y-m-d') }}</p>
-        <p class="bg-red-200 p-3 font-semibold  rounded-lg">End
+        <p class="bg-red-200 p-3 font-semibold rounded-lg sm:mb-2sm: mr-2 m-0">End
             Date: {{ \Carbon\Carbon::parse($lot['end_date'])->format('Y-m-d') }}</p>
         <button wire:click="$set('showModal', true)"
-                class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple">
+                class="py-2 px-6 bg-rust-orange rounded-xl text-cloud-white font-semibold hover:text-black hover:bg-lavender-purple mt-3">
             More Info
         </button>
     </div>
@@ -208,6 +208,11 @@
                                 }
                             @endphp
 
+                            @if($item->watchlists->contains('user_id', auth()->id()))
+                                <div class="absolute top-0 left-0 p-2 font-bold bg-black/50">
+                                    <i class="fa-solid fa-heart" style="color: #b57edc;"></i>
+                                </div>
+                            @endif
                             <img class="w-full h-auto object-cover object-center"
                                  src="{{ asset($images[0]  ? 'items/' . $images[0] : 'items/default.webp') }}"
                                  alt="{{ $item->title }} Image">

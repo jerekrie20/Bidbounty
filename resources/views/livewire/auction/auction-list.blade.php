@@ -22,7 +22,7 @@ state('show', false);
 $dropdown = fn() => $this->show = !$this->show;
 
 with(fn() => [
-    'lots' => Lot::query()
+    'lots' => Lot::with('categories')
         ->where(function ($query) {
             $query->where('title', 'like', '%' . $this->search . '%')
                 ->orWhere('description', 'like', '%' . $this->search . '%');
