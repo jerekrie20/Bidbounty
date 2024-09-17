@@ -22,7 +22,9 @@ return new class extends Migration
             $table->decimal('reserve_price', 10, 2)->nullable()->default(null);
             $table->datetime('start_time')->index('items_start_idx');
             $table->datetime('end_time')->index('items_end_idx');
-            $table->enum('status', ['available', 'pending', 'sold'])->index('items_status_idx')->default('available');
+            $table->enum('status', ['Available', 'Pending', 'Sold'])->index('items_status_idx')->default('available');
+            $table->enum('payment_status', ['Pending Payment', 'Customer Paid', 'Payment Sent', 'Payment cancelled'])->index('items_payment_status_idx')->default('pending');
+            $table->enum('shipping_status', ['Package Ready', 'Pending Shipping', 'Shipped', 'Delivered'])->index('items_shipping_status_idx')->default('pending');
             $table->json('images')->nullable()->default(null);
             $table->timestamps();
         });

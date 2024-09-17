@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
             $table->dateTime('transaction_date')->nullable();
-            $table->enum('status', ['pending', 'completed', 'cancelled'])->index('transactions_status_idx')->default('pending');
+            $table->enum('status', ['Pending Payment', 'Payment completed', 'Payment completed'])->index('transactions_status_idx')->default('Pending Payment');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

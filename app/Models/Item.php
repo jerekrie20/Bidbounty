@@ -51,9 +51,9 @@ class Item extends Model
     /**
      * Get the transactions associated with this item.
      */
-    public function transactions() : HasMany
+    public function transactions() : BelongsTo
     {
-        return $this->hasMany(Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 
     //watchlist relationship

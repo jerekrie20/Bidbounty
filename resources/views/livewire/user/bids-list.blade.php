@@ -84,7 +84,9 @@ with(fn() => [
                             <a href="{{ route('auction.single.item', ['lotId' => $bid->item->lot->id, 'itemId' => $bid->item->id]) }}">
                                 <button class="btn btn-xs sm:btn-sm md:btn-md border-rust-orange mr-1 mb-3 sm:mb-0">View</button>
                             </a>
+                            <a href="{{route('transactions',['itemId' => $bid->item->id]) }}">
                             <button class="btn btn-xs sm:btn-sm md:btn-md border-lavender-purple mb-3 sm:mb-0">View Transaction</button>
+                            </a>
                             <button class="btn btn-xs sm:btn-sm md:btn-md border-green-700 mb-3 sm:mb-0">Send Message</button>
                         </th>
                     </tr>
