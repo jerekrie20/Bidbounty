@@ -1,31 +1,34 @@
-1. Items
-    Features:
-        1. Add a view button to view the item
-          -When you click the view button, it will open up a modal that will show the item's details
-        2. Show the amount of people that added the item to their watchlist
-        3. Add jobs to the item
+Payment Process:
+ - Bidders must be able to pay via Stripe (open to other options).
+ - Payment initially goes to the company.
+ - A percentage of the total is taken out as a fee (clarify percentage).
+ - The remaining amount goes to the owner of the item.
 
-    BUGS:
-        1. Fix having to reselect start and end times when updating an item
+The payment will be held in escrow until the item is delivered. Once delivery is confirmed, the payment will be released to the owner. If the item is not
+delivered within a specified timeframe, the payment will be refunded to the bidder.
 
-    FUTURE REDESIGNS:
-        1. Redesign the data table to be more user friendly and responsive
-        2. Make the form more user friendly and responsive
-        3. Flash out dark vs light mode
+Payment Service Requirements:
+ - Currently using Stripe, but open to other options.
+ - Build an integrated payment checkout on-site instead of redirecting to Stripe.
+ - Provide detailed receipts of payments.
+ - Clearly show the status of each payment.
+ - Include shipping fees and taxes in the payment.
+ - Integrate UPS/FedEx/USPS shipping services.
 
-2. Lots
+Rules:
 
-    Features:
-        1. Add a view button to view the lot
-          -When you click the view button, it will open up a modal that will show the lot's details
-        2. Remove current Category and add a Main Category for lots
-    FUTURE REDESIGNS:
-        1. Redesign the data table to be more user friendly and responsive
-        2. Make the form more user friendly and responsive
-        3. Update the Categories section to be like the items section
-        3. Flash out dark vs light mode
+Bidders:
+ - Must pay the full amount of the bid.
+ - Must cover the shipping fee.
+ - Must pay applicable taxes.
 
+Owners:
+ - Must ensure timely delivery of the item.
+ - Must use the provided payment services for security.
+ - Must cover the service fee (specify if part of the percentage).
 
-Packages:
-    1. https://github.com/diglactic/laravel-breadcrumbs *might use for breadcrumbs
-    2. https://wireui.dev/packages/breadcrumbs *Another breadcrumb package
+Company:
+ - Must provide a secure environment for both bidders and owners.
+ - Must ensure a secure payment process.
+ - Must release payment to the owner upon confirmed delivery.
+ - Must ban users who violate the rules more than 3 times.

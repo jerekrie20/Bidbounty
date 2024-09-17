@@ -14,13 +14,15 @@ class UpdateTransactionStatus implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $transactionId;
+    protected $status;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($transactionId)
+    public function __construct($transactionId, $status)
     {
         $this->transactionId = $transactionId;
+        $this->status = $status;
     }
 
     /**
@@ -30,9 +32,21 @@ class UpdateTransactionStatus implements ShouldQueue
     {
         $transaction = Transaction::find($this->transactionId);
 
-        if ($transaction) {
-            $transaction->status = 'completed'; // or whatever status you need
+        $item = $transaction->item;
+
+        if($this->status){
+            $transaction->status = 'Payment completed'; // or whatever status you need
             $transaction->save();
+
+            $item->status = 'Customer Paid'; // or whatever status you need
+            $item->save();
+        }
+        else{
+            $transaction->status = 'Payment Canceled'; // or whatever status you need
+            $transaction->save();
+
+            $item->status = 'Payment Canceled'; // or whatever status you need
+            $item->save();
         }
     }
 }

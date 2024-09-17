@@ -19,6 +19,7 @@ mount(function ($itemId) {
     $this->itemId = $itemId;
     if (request()->has('success')) {
         $this->success = request()->get('success') === 'true';
+
     }
 
     if (!$itemId) {
@@ -30,6 +31,7 @@ mount(function ($itemId) {
     $this->transactions = auth()->user()->purchases()
         ->where('item_id', $itemId)
         ->with('item.lot')
+        ->with('buyer')
         ->get();
 });
 
@@ -53,8 +55,8 @@ $pay = function (Transaction $transaction) {
             'quantity' => 1,
         ]],
         'mode' => 'payment',
-        'success_url' => route('transactions', ['itemId' => $this->itemId, 'success' => 'true']),
-        'cancel_url' => route('transactions', ['itemId' => $this->itemId, 'success' => 'false']),
+        'success_url' => route('payment.success', ['transactionId' => $transaction->id, 'itemId' => $transaction->item_id]),
+        'cancel_url' => route('payment.cancel', ['transactionId' => $transaction->id,'itemId' => $transaction->item_id, 'success' => 'false']),
     ]);
 
     return redirect()->away($session->url);
@@ -86,8 +88,10 @@ $pay = function (Transaction $transaction) {
                 <tr class="text-peach-pink text-lg">
                     <th class="text-cloud-white">Name</th>
                     <th class="text-cloud-white">Owner</th>
+                    <th class="text-cloud-white">Bidder</th>
                     <th class="text-cloud-white">Price</th>
                     <th class="text-cloud-white">Status</th>
+                    <th class="text-cloud-white">Last Updated</th>
                     <th class="text-cloud-white">Auctions</th>
                 </tr>
                 </thead>
@@ -121,8 +125,14 @@ $pay = function (Transaction $transaction) {
                             {{ $transaction->item->user->name }}
                             {{--                            <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>--}}
                         </td>
+                        <td class="text-cloud-white font-semibold">
+                            {{ $transaction->buyer->name }}
+                        </td>
                         <td class="text-cloud-white font-semibold">${{$transaction->amount}}</td>
                         <td class="text-cloud-white font-semibold">{{$transaction->status}}</td>
+                        <td class="text-cloud-white font-semibold">
+                            {{ \Carbon\Carbon::parse($transaction->updated_at)->inUserTimezone()->format('Y-m-d h:i A') }}
+                        </td>
                         <th class="text-cloud-white">
                             <a href="{{ route('auction.single.item', ['lotId' => $transaction->item->lot->id, 'itemId' => $transaction->item->id]) }}">
                                 <button class="btn btn-xs sm:btn-sm md:btn-md border-rust-orange mr-1 mb-3 sm:mb-0">
@@ -130,11 +140,14 @@ $pay = function (Transaction $transaction) {
                                 </button>
                             </a>
 
-                            <button wire:click="pay({{$transaction}})"
-                                    class="btn btn-xs sm:btn-sm md:btn-md border-lavender-purple mb-3 sm:mb-0">Pay
-                            </button>
 
-                            <button class="btn btn-xs sm:btn-sm md:btn-md border-green-700 mb-3 sm:mb-0">Send Message
+                            @if($transaction->status != "Payment completed")
+                                <button wire:click="pay({{$transaction}})"
+                                        class="btn btn-xs sm:btn-sm md:btn-md border-lavender-purple mb-3 sm:mb-0">Pay
+                                </button>
+                            @endif
+
+                                <button class="btn btn-xs sm:btn-sm md:btn-md border-green-700 mb-3 sm:mb-0">Send Message
                             </button>
                         </th>
                     </tr>

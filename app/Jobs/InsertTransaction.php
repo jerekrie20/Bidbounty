@@ -54,7 +54,6 @@ class InsertTransaction implements ShouldQueue
             'buyer_id' => $maxBid->user_id,
             'seller_id' => $this->item->user_id,
             'amount' => $maxBid->amount,
-            'status' => 'pending'
         ];
 
         return $data;

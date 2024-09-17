@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LotController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Livewire\AuctionItems;
 use App\Livewire\AuctionSingleItem;
@@ -36,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('/watchlist', 'user.watch-lists')->name('watchlist');
     Volt::route('/bids', 'user.bids-list')->name('bids');
     Volt::route('/transactions/{itemId}', 'user.transactions')->name('transactions');
+    Route::get('/payment-success', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment-cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 
 //    Route::put('user/{user}/account',[UserController::class, 'updateAccount'])->name('user.account');
 });

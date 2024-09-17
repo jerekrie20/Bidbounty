@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +30,7 @@ class AppServiceProvider extends ServiceProvider
         Carbon::macro('inUserTimezone', function() {
             return $this->tz(auth()->user()?->timezone ?? config('app.timezone_display'));
         });
+
+        Cashier::calculateTaxes();
     }
 }

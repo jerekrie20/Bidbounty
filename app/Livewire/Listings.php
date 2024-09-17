@@ -256,6 +256,9 @@ class Listings extends Component
             //Bulk Delete images
             $imageService->deleteBulkImages($item->images, 'items');
             $item->delete();
+
+            //Remove job from queue
+            $this->jobDispatch($item);
             session()->flash('message', 'Item deleted successfully');
         }
     }
@@ -311,6 +314,7 @@ class Listings extends Component
         $endTimeConvert = Carbon::createFromFormat('Y-m-d\TH:i', $endTime, $userTimezone);
         $currentTime = now()->setTimezone($userTimezone);
         $adjustedNow = $currentTime->copy()->startOfMinute();
+
 
         Log::info('End Time Converted: ' . $endTimeConvert);
         Log::info('Current Time: ' . $currentTime);
