@@ -32,3 +32,147 @@ Company:
  - Must ensure a secure payment process.
  - Must release payment to the owner upon confirmed delivery.
  - Must ban users who violate the rules more than 3 times.
+
+
+ Messaging System:
+    - Users must be able to communicate with each other.
+    - Users must be able to report inappropriate messages.
+    - Users must be able to block other users.
+    - Users must be able to send attachments.
+    - Users must be able to send voice messages.
+    - If it's about an item, the item must be linked in the message.
+    - Users must be able to see the status of their messages.
+
+The messaging system must be secure and encrypted to protect user data and privacy. The system must also be scalable to handle a large number of users and messages.
+
+Todo:
+    Auction View:
+        Bids:
+            - Only show bids in the last 30 days unless status is still pending.
+            - Add date and time to each bid.
+            - Add filtering options for bids.
+        Wishlist:
+            - Allow users to add items to their wishlist.
+            - Allow users to remove items from their wishlist.
+            - Show users their wishlist.
+            - Allow users to share their wishlist.
+            - Allow users to follow other users' wishlists.
+            - Only show items that are still available.
+            - Add filtering options for wishlist items.
+        Messaging System:
+            - Implement a secure messaging system.
+            - Allow users to communicate with each other.
+            - Allow users to report inappropriate messages.
+            - Allow users to block other users.
+            - Allow users to send attachments.
+            - Allow users to send voice messages.
+            - Link messages to items.
+            - Show message status.
+            - Ensure the system is secure and encrypted.
+            - Ensure the system is scalable.
+        Payment Side:
+            - Implement a secure payment system.
+                - Allow users to pay via Stripe. - DONE
+                - Take a percentage fee.
+            - Hold payment in escrow.
+            - Release payment upon delivery.
+            - Refund payment if not delivered.
+            - Provide detailed receipts.
+            - Show payment status.
+            - Include shipping fees and taxes.
+            - Integrate shipping services.
+            - Ensure the system is secure and encrypted.
+            - Ensure the system is scalable.
+            - Implement two-factor authentication.
+            - Ensure regular updates and reviews of encryption methods.
+        User Auctions (As a bidder):
+            - Allow users to click on other users to view their profile.
+            - Have a profile page for each user.
+            - Show users' auctions.
+            - Allow reviews on users' profiles.
+            - Show users' ratings.
+            - Allow users to follow other users.
+            - Allow users to block other users.
+            - Allow users to report other users.
+    Dashboard View:
+        Dashboard:
+            Menu:
+                - Auctions (Rename Lots)
+                - Items (Rename Listings)
+                - Transactions
+                - Reviews
+                - Shipping
+                - Remove Watchlist
+                - Messages
+                - Followers
+                - Profile (Rename Account)
+                - Settings
+                - Logout - DONE
+            Home:
+                - Show recent items.
+                - Show recent auctions.
+                - Show recent followers.
+                - Show recent messages.
+                - Show recent transactions.
+                - Show recent reviews.
+            Settings:
+                - Allow users to add policies for their auctions.
+                - Allow users to view banned users.
+                - Allow users to view blocked users.
+                - Allow users to set shipping policies and add credentials.
+                - Implement two-factor authentication.
+            Messages:
+                - Same as Auction View.
+                - Maybe add the ability to send a message/email to all followers.
+            Followers:
+                - Show users who follow you.
+                - Show users you follow.
+                - Allow users to block other users.
+                - Allow users to report other users.
+            Transactions:
+                - Show all transactions.
+                - Show transaction status.
+                - Show transaction details.
+            Reviews:
+                - Show all reviews.
+                - Show review status.
+                - Show review details.
+                - Report reviews.
+                - Respond to reviews.
+            Shipping:
+                - Show all shipping details.
+                - Show shipping status.
+                - Show shipping details.
+                - Allow users to add shipping details.
+    Admin View:
+     - Working on it.
+
+Additional Points:
+    User Experience Enhancements:
+        - Add notifications for bids, wishlist updates, and messages.
+    Scalability and Performance:
+        - Ensure load balancing and server scaling.
+        - Optimize database queries.
+    Backup and Recovery:
+        - Set up regular backups for user data and transaction records.
+        - Implement a disaster recovery plan.
+    Legal and Compliance:
+        - Ensure compliance with GDPR, CCPA, and other data protection regulations.
+        - Include terms of service and privacy policy management.
+    User Support:
+        - Implement a helpdesk or support system with FAQs, tutorials, and contact forms.
+    Auction Specifics:
+        - Define auction types.
+        - Implement automatic bid increments and max bid settings.
+        - Add auction end notifications.
+    Analytics and Reporting:
+        - Provide analytics for users to track auction and bid performance.
+        - Add admin analytics for overall platform performance.
+    General Interface and Usability:
+        - Ensure responsive design for mobile and tablet users.
+        - Conduct usability testing to enhance user experience.
+
+
+
+
+
