@@ -53,7 +53,7 @@ $bgColor = computed(fn() => [
     <h1 class="mt-10 mb-4 text-4xl dark:text-emerald-100 font-bold text-gray-700 pb-4 pt-3 text-center">Auctions</h1>
 
     <!-- Search Form -->
-    <div class="flex justify-between items-center xl:w-2/3 m-auto">
+    <div class="flex justify-between flex-col md:flex-row items-center  xl:w-2/3 2xl:w-1/3 m-auto">
         <div class="p-4 font-semibold">
             <p class="text-3xl dark:text-lavender-purple font-bold text-gray-700 text-center">Filter: </p>
         </div>
@@ -75,7 +75,7 @@ $bgColor = computed(fn() => [
         </div>
     </div>
 
-    <div class="flex justify-center items-center xl:w-2/3 m-auto">
+    <div class="flex justify-center flex-col sm:flex-row items-center xl:w-2/3 2xl:w-1/3 m-auto">
         <div class="p-4 font-semibold text-xl">
             <section>
                 <select name="status" id="status" wire:model.live="status"
@@ -100,7 +100,7 @@ $bgColor = computed(fn() => [
 
                 <!-- Dropdown menu -->
 
-                    <div @click.away="show = false" x-show="show" class="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 text-xl sm:text-lg w-50 sm:w-screen sm:max-w-lg">
+                    <div @click.away="show = false" x-show="show" class="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 text-xl sm:text-lg w-full sm:w-screen sm:max-w-lg">
 
                         <ul class="py-1 flex justify-start flex-wrap">
                             @foreach($categories as $category)
@@ -143,7 +143,7 @@ $bgColor = computed(fn() => [
         @endif
         @foreach($lots as $lot)
             <a href="/auction/{{ $lot->id }}">
-                <div class="w-full md:w-1/2 lg:w-1/3 p-4 hover:cursor-pointer md:h-[40rem]">
+                <div class="w-full md:w-1/2 lg:w-1/3 2xl:w-1/4 p-4 hover:cursor-pointer md:h-[40rem]">
                     <div class="bg-white rounded-lg overflow-hidden h-full shadow-lg hover:shadow-wheat-yellow">
                         <div class="relative">
                             <img class="w-full h-auto object-cover object-center"

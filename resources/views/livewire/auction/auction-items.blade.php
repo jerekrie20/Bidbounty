@@ -1,7 +1,7 @@
 @php use function Livewire\Volt\js; @endphp
 <div x-data="{ show: @entangle('show') }">
 
-    <div class="w-1/2 m-auto flex flex-wrap justify-around mt-2">
+    <div class="w-full md:w-1/2 m-auto flex flex-wrap justify-around mt-2">
         <p class="bg-peach-pink p-3 font-semibold rounded-lg sm:mb-2 sm:mr-2 m-0">Lot: {{$lot['title']}}</p>
         <p class="bg-blue-500 p-3 font-semibold rounded-lg sm:mb-2 sm:mr-2 m-0">Status: {{$lot['status']}}</p>
         <p class="bg-green-500 p-3 font-semibold rounded-lg sm:mb-2 sm:mr-2 m-0">Start
@@ -96,7 +96,7 @@
     </div>
 
     <!-- Search Form -->
-    <div class="flex justify-between items-center xl:w-2/3 m-auto">
+    <div class="flex flex-col flex-wrap justify-center lg:flex-row lg:justify-between  items-center xl:w-2/3 m-auto">
         <div class="p-4 font-semibold">
             <p class="text-3xl dark:text-lavender-purple font-bold text-gray-700 text-center">Filter: </p>
         </div>
@@ -198,7 +198,7 @@
         @foreach($auctionItems as $item)
             <a href="/auction/{{$lot->id}}/item/{{ $item->id }}">
 
-                <div class="w-full md:w-1/2 lg:w-1/3 p-4 hover:cursor-pointer md:h-[41rem]">
+                <div class="w-full md:w-1/2 lg:w-1/3 2xl:w-1/4 p-4 hover:cursor-pointer md:h-[41rem]">
                     <div class="bg-white rounded-lg overflow-hidden h-full shadow-lg hover:shadow-wheat-yellow">
                         <div class="relative">
                             @php

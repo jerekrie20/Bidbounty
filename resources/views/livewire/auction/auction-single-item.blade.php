@@ -106,8 +106,8 @@
 
 
     <div class="m-auto w-full sm:w-2/3 mt-4 mb-11">
-        <div class="bg-cloud-white flex flex-col-reverse sm:flex-row justify-center">
-            <div class="w-full sm:w-1/2 flex flex-wrap">
+        <div class="bg-cloud-white flex flex-col-reverse justify-center  lg:flex-col xl:flex-row ">
+            <div class="flex flex-wrap w-full  xl:w-1/2 ">
                 @php
                     $images = json_decode($item->images);
                     if (is_array($images) && count($images) > 0 && is_array($images[0])) {
@@ -123,7 +123,7 @@
                 @endforeach
             </div>
 
-            <div class="w-full sm:w-1/2">
+            <div class="w-full  xl:w-1/2 ">
                 <div class="flex justify-between bg-rust-orange font-semibold">
                     <p class="p-2 text-white">
                         Start: {{ \Carbon\Carbon::parse($item->start_time)->inUserTimezone()->format('Y-m-d g:i A') }}</p>
@@ -132,7 +132,7 @@
                 </div>
 
                 <div class="flex justify-between mt-2">
-                    <div class="flex justify-center">
+                    <div class="flex justify-center flex-wrap">
                         @foreach($item->categories as $category)
                             <p class="p-1">{{ $category->name }}</p><i
                                 class="p-2 fa-solid fa-ellipsis-vertical fa-beat text-midnight-blue"></i>
