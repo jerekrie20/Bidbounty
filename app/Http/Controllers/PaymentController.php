@@ -13,6 +13,10 @@ class PaymentController extends Controller
         $transactionId = $request->query('transactionId');
         $itemId = $request->query('itemId');
 
+        if (! $transactionId || ! $itemId) {
+            return redirect()->route('dashboard')->with('error', 'Missing payment information.');
+        }
+
         // Dispatch the job to update the transaction status in the database
         UpdateTransactionStatus::dispatch($transactionId,true);
 
@@ -23,6 +27,10 @@ class PaymentController extends Controller
     {
         $transactionId = $request->query('transactionId');
         $itemId = $request->query('itemId');
+
+        if (! $transactionId || ! $itemId) {
+            return redirect()->route('dashboard')->with('error', 'Missing payment information.');
+        }
 
         // Dispatch the job to update the transaction status in the database
         UpdateTransactionStatus::dispatch($transactionId,false);

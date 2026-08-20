@@ -207,10 +207,12 @@ class AuctionSingleItem extends Component
     {
         $this->lotId = $lotId;
         $this->itemId = $itemId;
-        $this->item = Item::find($this->itemId);
-        $this->lot = Lot::find($this->lotId);
-        // Check if item is in wishlist
-        $this->wish = $this->item->watchlists()->where('user_id', auth()->id())->exists();
+        $this->item = Item::findOrFail($this->itemId);
+        $this->lot = Lot::findOrFail($this->lotId);
+        // Check if item is in wishlist (only for authenticated users)
+        $this->wish = auth()->check()
+            ? $this->item->watchlists()->where('user_id', auth()->id())->exists()
+            : false;
         // Initialize the bids
         $this->refreshBids();
     }

@@ -146,7 +146,7 @@
 
                 <!-- Dropdown menu -->
 
-                <div @click.away="show = false" x-show="show"
+                <div @click.away="show = false" x-show="show" x-cloak
                      class="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 text-xl sm:text-lg w-50 sm:w-screen sm:max-w-lg">
 
                     <ul class="py-1 flex justify-start flex-wrap">
@@ -202,7 +202,7 @@
                     <div class="bg-white rounded-lg overflow-hidden h-full shadow-lg hover:shadow-wheat-yellow">
                         <div class="relative">
                             @php
-                                $images = json_decode($item->images);
+                                $images = json_decode($item->images) ?? [];
                                 if (is_array($images) && count($images) > 0 && is_array($images[0])) {
                                     $images = array_merge(...$images);
                                 }
@@ -214,7 +214,7 @@
                                 </div>
                             @endif
                             <img class="w-full h-auto object-cover object-center"
-                                 src="{{ asset($images[0]  ? 'items/' . $images[0] : 'items/default.webp') }}"
+                                 src="{{ asset(!empty($images[0]) ? 'items/' . $images[0] : 'items/default.webp') }}"
                                  alt="{{ $item->title }} Image">
                             <div class="absolute top-0 right-0 p-2 font-bold {{$this->bgColor($item->status)}}">
                                 {{$item->status}}

@@ -5,24 +5,24 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "intervention/image": "^3.3",
-        "laravel/cashier": "^15.4",
-        "laravel/framework": "^11.0",
-        "laravel/tinker": "^2.9",
+        "laravel/cashier": "^16.0",
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0",
         "league/csv": "^9.14",
-        "livewire/livewire": "^3.4",
+        "livewire/livewire": "^3.6",
         "livewire/volt": "^1.6",
         "pusher/pusher-php-server": "^7.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.27",
         "laravel/sail": "^1.26",
         "laravel/telescope": "^5.1",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^10.5",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^12.5.12",
         "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
@@ -56,7 +56,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "11.x-dev"
+            "dev-master": "13.x-dev"
         },
         "laravel": {
             "dont-discover": [
@@ -73,6 +73,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }

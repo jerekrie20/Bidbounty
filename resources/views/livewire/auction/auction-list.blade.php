@@ -100,7 +100,7 @@ $bgColor = computed(fn() => [
 
                 <!-- Dropdown menu -->
 
-                    <div @click.away="show = false" x-show="show" class="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 text-xl sm:text-lg w-full sm:w-screen sm:max-w-lg">
+                    <div @click.away="show = false" x-show="show" x-cloak class="absolute left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg mt-2 z-50 text-xl sm:text-lg w-full sm:w-screen sm:max-w-lg">
 
                         <ul class="py-1 flex justify-start flex-wrap">
                             @foreach($categories as $category)

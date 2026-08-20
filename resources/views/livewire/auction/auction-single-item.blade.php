@@ -109,18 +109,20 @@
         <div class="bg-cloud-white flex flex-col-reverse justify-center  lg:flex-col xl:flex-row ">
             <div class="flex flex-wrap w-full  xl:w-1/2 ">
                 @php
-                    $images = json_decode($item->images);
+                    $images = json_decode($item->images) ?? [];
                     if (is_array($images) && count($images) > 0 && is_array($images[0])) {
                         $images = array_merge(...$images);
                     }
                 @endphp
-                @foreach($images as $image)
+                @forelse($images as $image)
                     <a href="{{ asset('items/' . $image) }}" data-lightbox="gallery"
                        class="w-1/3 h-auto object-cover rounded-md p-1 mb-2">
                         <img src="{{ asset('items/' . $image) }}" alt="Image Preview">
                     </a>
-
-                @endforeach
+                @empty
+                    <img src="{{ asset('items/default.webp') }}" alt="{{ $item->title }}"
+                         class="w-full h-auto object-cover rounded-md p-1 mb-2">
+                @endforelse
             </div>
 
             <div class="w-full  xl:w-1/2 ">
@@ -149,6 +151,7 @@
                         <div x-data="{ show: true }"
                              x-init="setTimeout(() => show = false, 3000)"
                              x-show="show"
+                             x-cloak
                              class="text-lg text-green-500 text-center" id="success">
                             {{ Session::get('notice') }}
                         </div>
@@ -318,6 +321,5 @@
 
     </div>
 
-    @livewireScripts(['echo' => ['broadcaster' => 'pusher', 'key' => env('PUSHER_APP_KEY'), 'cluster' => env('PUSHER_APP_CLUSTER'), 'encrypted' => true]])
 
 </div>

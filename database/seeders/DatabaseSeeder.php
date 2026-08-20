@@ -33,7 +33,8 @@ class DatabaseSeeder extends Seeder
             StateSeeder::class,
             CategorySeeder::class,
             LotSeeder::class,
-            AuctionCategorySeeder::class
+            AuctionCategorySeeder::class,
+            ItemSeeder::class
         ]);
     }
 }

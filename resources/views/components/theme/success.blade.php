@@ -2,6 +2,7 @@
     <div x-data="{ show: true }"
          x-init="setTimeout(() => show = false, 3000)"
          x-show="show"
+         x-cloak
          class="text-lg text-green-500 text-center" id="success">
         {{ Session::get('success') }}
     </div>
